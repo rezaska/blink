@@ -1,0 +1,64 @@
+:root {
+  --glow-color: #2dd4bf;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: transparent;
+  /* The whole overlay is click-through at the OS level; this is belt-and-braces. */
+  pointer-events: none;
+  cursor: default;
+  user-select: none;
+}
+
+.layer {
+  position: fixed;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  will-change: opacity;
+}
+
+/*
+ * BLUR — frosted "breath" pulse. True blur of underlying apps is impossible from a
+ * transparent window (backdrop-filter samples in-page content only), so we approximate
+ * with a soft neutral veil plus a faint radial vignette that reads as "focus softening".
+ * The backdrop-filter is progressive enhancement where the compositor honours it.
+ */
+#blur {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(248, 250, 252, 0.06) 0%,
+    rgba(226, 232, 240, 0.16) 100%
+  );
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+
+/* "Stronger frost" preference: a heavier, more obviously frosted pulse. */
+#blur.strong {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(248, 250, 252, 0.1) 0%,
+    rgba(226, 232, 240, 0.28) 100%
+  );
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+}
+
+/* DIM — black veil fading to ~24% opacity at peak. */
+#dim {
+  background: rgba(0, 0, 0, 0.24);
+}
+
+/* EDGE GLOW — soft inset glow hugging the screen edges, teal by default. */
+#glow {
+  box-shadow:
+    inset 0 0 160px 60px var(--glow-color),
+    inset 0 0 40px 8px var(--glow-color);
+}

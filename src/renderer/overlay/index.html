@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <!-- CSP injected at build/dev time by cspPlugin (strict in prod, HMR-friendly in dev). -->
+    <!--CSP-->
+    <title>Blink Overlay</title>
+    <link rel="stylesheet" href="./overlay.css" />
+  </head>
+  <body>
+    <!-- Three stacked cue layers; all click-through, all start invisible. -->
+    <div id="blur" class="layer"></div>
+    <div id="dim" class="layer"></div>
+    <div id="glow" class="layer"></div>
+    <script type="module" src="./overlay.ts"></script>
+  </body>
+</html>
