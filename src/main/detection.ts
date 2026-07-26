@@ -42,8 +42,14 @@ let tickCount = 0
 
 let timerHandle: ReturnType<typeof setInterval> | null = null
 let tickHandle: ReturnType<typeof setInterval> | null = null
+let pausedUntil: number | null = null
+let resumeTimer: ReturnType<typeof setTimeout> | null = null
 let onChange: (() => void) | null = null
 let onCueFired: (() => void) | null = null
+
+function isPaused(): boolean {
+  return pausedUntil !== null && Date.now() < pausedUntil
+}
 
 function notify(): void {
   onChange?.()
@@ -166,6 +172,13 @@ export async function applySettings(): Promise<void> {
     trigger = new CueTrigger({ noBlinkMs: noBlink })
   }
 
+  // While paused, just remember the desired mode; resume applies it.
+  if (isPaused()) {
+    mode = s.detectionMode
+    notify()
+    return
+  }
+
   if (s.detectionMode !== mode) {
     await switchMode(s.detectionMode)
   } else if (mode === 'timer' || webcamFallback) {
@@ -174,6 +187,36 @@ export async function applySettings(): Promise<void> {
   } else {
     notify()
   }
+}
+
+function clearResumeTimer(): void {
+  if (resumeTimer) clearTimeout(resumeTimer)
+  resumeTimer = null
+}
+
+/** Pause all reminders for `ms`, turning the camera off; auto-resumes when it elapses. */
+export function pauseFor(ms: number): void {
+  clearResumeTimer()
+  clearTimers()
+  destroyDetectorWindow()
+  pausedUntil = Date.now() + ms
+  resumeTimer = setTimeout(() => resume(), ms)
+  notify()
+}
+
+/** Pause until 8:00 AM tomorrow (local). */
+export function pauseUntilTomorrow(): void {
+  const now = new Date()
+  const wake = new Date(now)
+  wake.setDate(now.getDate() + 1)
+  wake.setHours(8, 0, 0, 0)
+  pauseFor(wake.getTime() - now.getTime())
+}
+
+export function resume(): void {
+  clearResumeTimer()
+  pausedUntil = null
+  void switchMode(mode) // restart the current mode from scratch
 }
 
 /** Fire a specific cue immediately (Settings → Preview), bypassing the trigger. */
@@ -192,9 +235,12 @@ export interface EngineSnapshot {
   mode: DetectionMode
   statusText: string
   trayState: TrayState
+  paused: boolean
+  resumeText: string | null
 }
 
 function trayState(): TrayState {
+  if (isPaused()) return 'paused'
   if (mode === 'timer') return 'monitoring'
   if (webcamFallback === 'no-permission' || webcamFallback === 'camera-in-use' || webcamFallback === 'error') {
     return 'no-camera'
@@ -203,7 +249,13 @@ function trayState(): TrayState {
   return 'monitoring'
 }
 
+function resumeClock(): string | null {
+  if (pausedUntil === null) return null
+  return new Date(pausedUntil).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
+}
+
 function statusText(): string {
+  if (isPaused()) return `Paused · resumes ${resumeClock()}`
   if (mode === 'timer') return `Timer · every ${Math.round(timerIntervalMs / 1000)}s`
   if (webcamFallback === 'no-permission') return 'Camera denied · using timer'
   if (webcamFallback === 'camera-in-use') return 'Camera in use · using timer'
@@ -221,5 +273,11 @@ function statusText(): string {
 }
 
 export function snapshot(): EngineSnapshot {
-  return { mode, statusText: statusText(), trayState: trayState() }
+  return {
+    mode,
+    statusText: statusText(),
+    trayState: trayState(),
+    paused: isPaused(),
+    resumeText: resumeClock()
+  }
 }

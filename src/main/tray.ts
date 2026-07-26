@@ -1,6 +1,8 @@
-import { Menu, Tray, nativeImage, app } from 'electron'
-import { snapshot, type TrayState } from './detection'
+import { Menu, Tray, nativeImage, app, type MenuItemConstructorOptions } from 'electron'
+import { snapshot, pauseFor, pauseUntilTomorrow, resume, type TrayState } from './detection'
 import { openSettingsWindow } from './settings-window'
+
+const MIN = 60_000
 
 let tray: Tray | null = null
 let currentTitle = '◉'
@@ -48,9 +50,24 @@ export function rebuildMenu(): void {
   applyState(s.trayState)
   tray.setToolTip(`Blink — ${s.statusText}`)
 
+  const pauseSection: MenuItemConstructorOptions[] = s.paused
+    ? [{ label: `Resume (paused until ${s.resumeText})`, click: () => resume() }]
+    : [
+        {
+          label: 'Pause',
+          submenu: [
+            { label: 'For 30 minutes', click: () => pauseFor(30 * MIN) },
+            { label: 'For 1 hour', click: () => pauseFor(60 * MIN) },
+            { label: 'Until tomorrow', click: () => pauseUntilTomorrow() }
+          ]
+        }
+      ]
+
   const menu = Menu.buildFromTemplate([
     { label: 'Blink', enabled: false },
     { label: s.statusText, enabled: false },
+    { type: 'separator' },
+    ...pauseSection,
     { type: 'separator' },
     { label: 'Open Blink Settings…', click: () => openSettingsWindow('settings') },
     { label: 'Re-run calibration…', click: () => openSettingsWindow('onboarding') },
