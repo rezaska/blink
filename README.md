@@ -1,4 +1,4 @@
-# Blink 👁️
+# Blink
 
 **Ambient blink reminders that keep your eyes from drying out — without breaking your focus.**
 
@@ -13,7 +13,7 @@ Ma, UC Davis): ambient cues raise blink rate, screen-blur works best, and interr
 popups are the worst (people just disable them). Cues fade slowly (~1.5s in, brief hold,
 ~1.5s out) so they register in your peripheral awareness without pulling you out of flow.
 
-## Private by design 🔒
+## Private by design
 
 Blink is built so your data never leaves your machine — and so you can *verify* that:
 
@@ -98,13 +98,9 @@ renders over normal apps and windowed video; note that a true native-full-screen
 
 Built and verified phase by phase:
 
-- ✅ **Phase 1** — scaffold, tray, overlays, the three cues
-- ✅ **Phase 2** — Timer mode + opt-in local webcam detection
-- ✅ **Phase 3** — onboarding, settings, local persistence, privacy controls
-- 🚧 **Phase 4** — tray icon states, pause options, native vibrancy blur, packaging
+- **Phase 1** — scaffold, tray, overlays, the three cues
+- **Phase 2** — Timer mode + opt-in local webcam detection
+- **Phase 3** — onboarding, settings, local persistence, privacy controls
+- **Phase 4** — tray icon states, pause options, native vibrancy blur, packaging
 
 Platform focus is **macOS** for v1; the code is kept cross-platform-friendly for Windows/Linux later.
-
-## License
-
-MIT
