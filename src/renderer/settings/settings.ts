@@ -253,7 +253,7 @@ async function renderSettings(): Promise<void> {
   }
   if (settings.cueType === 'blur') {
     cueCard.appendChild(
-      toggleRow('Stronger frost (macOS)', 'A more pronounced frosted look for the blur cue.', settings.macVibrancyBlur, (v) =>
+      toggleRow('Real frost (macOS)', 'Use a true macOS vibrancy blur of the screen behind the cue.', settings.macVibrancyBlur, (v) =>
         update({ macVibrancyBlur: v })
       )
     )

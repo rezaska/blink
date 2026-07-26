@@ -151,5 +151,12 @@ export function deleteAllData(): void {
 
 /** Apply the OS launch-at-login setting from the persisted preference. */
 export function applyLaunchAtLogin(): void {
-  app.setLoginItemSettings({ openAtLogin: getSettings().launchAtLogin, openAsHidden: true })
+  // Unsigned dev builds can't register a login item ("Operation not permitted"); it works
+  // in a packaged/signed app. Skip in dev to avoid noisy errors.
+  if (!app.isPackaged) return
+  try {
+    app.setLoginItemSettings({ openAtLogin: getSettings().launchAtLogin, openAsHidden: true })
+  } catch (err) {
+    console.warn('[store] setLoginItemSettings failed:', err)
+  }
 }

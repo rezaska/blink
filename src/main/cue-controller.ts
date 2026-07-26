@@ -1,13 +1,17 @@
 import { overlayWindows } from './overlay-manager'
+import { fireVibrancyBlur } from './vibrancy-overlay'
 import { IPC, type CuePayload } from '../shared/types'
 
 /**
- * Broadcasts a cue to every overlay window so it fires simultaneously on all
- * displays. This is the single choke point through which all cues flow — the tray
- * (Phase 1), the trigger engine (Phase 2), and Settings "Preview" (Phase 3) all
- * call `fireCue`.
+ * Single choke point for all cues — the tray, the trigger engine, and Settings "Preview"
+ * all call `fireCue`. A blur cue with the macOS "real frost" preference is routed to the
+ * native vibrancy overlay; every other cue renders in the CSS overlay windows.
  */
 export function fireCue(payload: CuePayload): void {
+  if (process.platform === 'darwin' && payload.type === 'blur' && payload.strongFrost) {
+    fireVibrancyBlur(payload.intensity ?? 1, payload.timing)
+    return
+  }
   for (const win of overlayWindows()) {
     win.webContents.send(IPC.cueFire, payload)
   }

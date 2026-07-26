@@ -2,6 +2,7 @@ import { app } from 'electron'
 import { installNetworkGuard } from './network-guard'
 import { registerAppScheme, registerAppProtocol } from './protocol'
 import { initOverlays, destroyOverlays } from './overlay-manager'
+import { destroyVibrancyOverlays } from './vibrancy-overlay'
 import { createTray, rebuildMenu, flashCue } from './tray'
 import { installPermissionHandler } from './permissions'
 import { initDetection, applySettings, stopDetection } from './detection'
@@ -46,4 +47,5 @@ app.on('window-all-closed', () => {
 app.on('before-quit', () => {
   stopDetection()
   destroyOverlays()
+  destroyVibrancyOverlays()
 })
