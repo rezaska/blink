@@ -43,6 +43,7 @@ let tickCount = 0
 let timerHandle: ReturnType<typeof setInterval> | null = null
 let tickHandle: ReturnType<typeof setInterval> | null = null
 let onChange: (() => void) | null = null
+let onCueFired: (() => void) | null = null
 
 function notify(): void {
   onChange?.()
@@ -62,6 +63,7 @@ function fire(): void {
   fireCue(cuePayload())
   trigger.markFired(Date.now())
   recordCue()
+  onCueFired?.()
 }
 
 function clearTimers(): void {
@@ -137,8 +139,9 @@ async function switchMode(next: DetectionMode): Promise<void> {
 }
 
 /** Register IPC listeners once, at startup. */
-export function initDetection(onStatusChange: () => void): void {
+export function initDetection(onStatusChange: () => void, cueFired?: () => void): void {
   onChange = onStatusChange
+  onCueFired = cueFired ?? null
   ipcMain.on(IPC.detectorBlink, () => {
     if (mode === 'webcam' && !webcamFallback) {
       tracker.addBlink(Date.now())
@@ -183,9 +186,21 @@ export function stopDetection(): void {
   destroyDetectorWindow()
 }
 
+export type TrayState = 'monitoring' | 'paused' | 'no-camera'
+
 export interface EngineSnapshot {
   mode: DetectionMode
   statusText: string
+  trayState: TrayState
+}
+
+function trayState(): TrayState {
+  if (mode === 'timer') return 'monitoring'
+  if (webcamFallback === 'no-permission' || webcamFallback === 'camera-in-use' || webcamFallback === 'error') {
+    return 'no-camera'
+  }
+  if (detectorStatus.state === 'no-face') return 'paused'
+  return 'monitoring'
 }
 
 function statusText(): string {
@@ -206,5 +221,5 @@ function statusText(): string {
 }
 
 export function snapshot(): EngineSnapshot {
-  return { mode, statusText: statusText() }
+  return { mode, statusText: statusText(), trayState: trayState() }
 }

@@ -2,7 +2,7 @@ import { app } from 'electron'
 import { installNetworkGuard } from './network-guard'
 import { registerAppScheme, registerAppProtocol } from './protocol'
 import { initOverlays, destroyOverlays } from './overlay-manager'
-import { createTray, rebuildMenu } from './tray'
+import { createTray, rebuildMenu, flashCue } from './tray'
 import { installPermissionHandler } from './permissions'
 import { initDetection, applySettings, stopDetection } from './detection'
 import { registerSettingsIpc, openSettingsWindow } from './settings-window'
@@ -28,7 +28,7 @@ app.whenReady().then(async () => {
   initOverlays()
   createTray()
   registerSettingsIpc()
-  initDetection(rebuildMenu)
+  initDetection(rebuildMenu, flashCue)
 
   if (getSettings().onboarded) {
     await applySettings()
