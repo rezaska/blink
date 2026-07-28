@@ -174,15 +174,7 @@ function renderOnboarding(): void {
     }
     inner.querySelector('#replay')!.addEventListener('click', playAll)
 
-    const foot = el('<div style="display:flex;gap:8px"></div>')
-    const decide = el('<button class="ghost">Let Blink decide</button>')
-    decide.addEventListener('click', () => {
-      draft.cueType = 'blur'
-      sensitivity()
-    })
-    foot.appendChild(decide)
-    foot.appendChild(nextBtn('Continue', sensitivity))
-    mount(inner, foot)
+    mount(inner, nextBtn('Continue', sensitivity))
     playAll()
   }
 
