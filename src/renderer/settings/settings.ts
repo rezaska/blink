@@ -235,8 +235,7 @@ function renderOnboarding(): void {
 
 // ---------- settings panel ----------
 
-async function renderSettings(): Promise<void> {
-  const stats = await api.getStats()
+function renderSettings(): void {
   const dataFolder = '' // shown via reveal button; path not needed inline
 
   app.innerHTML = ''
@@ -304,16 +303,28 @@ async function renderSettings(): Promise<void> {
   genCard.appendChild(rowNode('Calibration', 'Redo the guided setup.', recalib))
   app.appendChild(genCard)
 
-  // --- Stats card ---
+  // --- Stats card --- (rendered immediately with placeholders, then filled async so a
+  // settings change never waits on the stats IPC before the UI updates)
   const statsCard = el('<div class="card"><h2>Today</h2></div>')
   const grid = el('<div class="stat-grid"></div>')
-  const trend =
-    stats.bpmTrend === null ? '-' : `${stats.bpmTrend > 0 ? '+' : ''}${stats.bpmTrend.toFixed(1)}`
-  grid.appendChild(statNode(stats.todayAvgBpm === null ? '-' : stats.todayAvgBpm.toFixed(1), 'Avg blinks/min'))
-  grid.appendChild(statNode(String(stats.todayCues), 'Cues fired'))
-  grid.appendChild(statNode(trend, 'vs yesterday'))
+  const bpmStat = statNode('–', 'Avg blinks/min')
+  const cuesStat = statNode('–', 'Cues fired')
+  const trendStat = statNode('–', 'vs yesterday')
+  grid.append(bpmStat, cuesStat, trendStat)
   statsCard.appendChild(grid)
   app.appendChild(statsCard)
+  void api.getStats().then((stats) => {
+    const setNum = (node: HTMLElement, text: string) => {
+      const n = node.querySelector('.num')
+      if (n) n.textContent = text
+    }
+    setNum(bpmStat, stats.todayAvgBpm === null ? '–' : stats.todayAvgBpm.toFixed(1))
+    setNum(cuesStat, String(stats.todayCues))
+    setNum(
+      trendStat,
+      stats.bpmTrend === null ? '–' : `${stats.bpmTrend > 0 ? '+' : ''}${stats.bpmTrend.toFixed(1)}`
+    )
+  })
 
   // --- Privacy card ---
   const privCard = el('<div class="card"><h2>Privacy &amp; data</h2></div>')
@@ -402,10 +413,14 @@ function toggleRow(label: string, sub: string, checked: boolean, onChange: (v: b
   return rowNode(label, sub, input)
 }
 
-/** Persist a settings change; re-render unless `rerender` is false (e.g. slider drag). */
+/**
+ * Apply a settings change optimistically: update local state and re-render immediately
+ * (no waiting on IPC), then persist in the background. Keeps selection instant.
+ */
 async function update(patch: Partial<Settings>, rerender = true): Promise<void> {
+  settings = { ...settings, ...patch }
+  if (rerender) renderSettings()
   settings = await api.setSettings(patch)
-  if (rerender) void renderSettings()
 }
 
 // ---------- bootstrap ----------
