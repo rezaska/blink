@@ -47,15 +47,28 @@ function renderOnboarding(): void {
   const draft: Settings = { ...settings }
   let step = 0
   const STEPS = 5
+  // Ordered steps, so a Back button can return to the previous one (declarations hoist).
+  const steps: Array<() => void> = [welcome, detection, tasting, sensitivity, done]
 
   const mount = (inner: HTMLElement, footer: HTMLElement) => {
     app.innerHTML = ''
     const card = el('<div class="card"></div>')
     card.appendChild(inner)
     app.appendChild(card)
+
     const dots = el('<div class="steps"></div>')
     for (let i = 0; i < STEPS; i++) dots.appendChild(el(`<div class="dot ${i === step ? 'active' : ''}"></div>`))
+
     const foot = el('<div class="footer"></div>')
+    // Left: Back (or a spacer on the first step, to keep the dots centered).
+    if (step > 0) {
+      const back = el('<button class="ghost">Back</button>')
+      const target = steps[step - 1]
+      back.addEventListener('click', () => target())
+      foot.appendChild(back)
+    } else {
+      foot.appendChild(el('<div></div>'))
+    }
     foot.appendChild(dots)
     foot.appendChild(footer)
     app.appendChild(foot)
