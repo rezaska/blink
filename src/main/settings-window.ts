@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from 'electron'
+import { app, BrowserWindow, ipcMain, screen } from 'electron'
 import { join } from 'node:path'
 import { IPC, type Settings, type CuePayload } from '../shared/types'
 import {
@@ -26,10 +26,11 @@ export function openSettingsWindow(view: SettingsView = 'auto'): void {
   }
 
   win = new BrowserWindow({
-    width: 720,
-    height: 620,
-    minWidth: 560,
-    minHeight: 520,
+    width: 560,
+    height: 460,
+    minWidth: 460,
+    minHeight: 260,
+    useContentSize: true, // size the content area, not incl. the title bar
     title: 'Blink',
     show: false,
     fullscreenable: false,
@@ -109,5 +110,15 @@ export function registerSettingsIpc(): void {
     // Menu-bar app: closing the window just hides the UI; app keeps running.
     closeSettingsWindow()
     app.dock?.hide()
+  })
+
+  // Resize the window to fit the rendered content (capped to the screen), so the
+  // window hugs the content rather than leaving lots of empty space.
+  ipcMain.on(IPC.resizeSettings, (_e, height: number) => {
+    if (!win || win.isDestroyed()) return
+    const [w] = win.getContentSize()
+    const maxH = Math.floor(screen.getDisplayNearestPoint(win.getBounds()).workArea.height * 0.9)
+    const h = Math.max(260, Math.min(Math.ceil(height), maxH))
+    win.setContentSize(w, h, false)
   })
 }

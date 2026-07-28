@@ -107,5 +107,6 @@ export const IPC = {
   deleteAllData: 'settings:deleteAllData',
   getInitialView: 'settings:getInitialView',
   finishOnboarding: 'settings:finishOnboarding',
-  closeSettings: 'settings:close'
+  closeSettings: 'settings:close',
+  resizeSettings: 'settings:resize'
 } as const

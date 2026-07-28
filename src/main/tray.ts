@@ -69,7 +69,7 @@ export function rebuildMenu(): void {
     { type: 'separator' },
     ...pauseSection,
     { type: 'separator' },
-    { label: 'Open Blink Settings…', click: () => openSettingsWindow('settings') },
+    { label: 'Blink Settings', click: () => openSettingsWindow('settings') },
     { label: 'Re-run calibration…', click: () => openSettingsWindow('onboarding') },
     { type: 'separator' },
     { label: 'Quit Blink', click: () => app.quit() }

@@ -20,6 +20,11 @@ function el(html: string): HTMLElement {
   return t.content.firstElementChild as HTMLElement
 }
 
+/** Ask the main process to size the window to the rendered content. */
+function fitWindow(): void {
+  requestAnimationFrame(() => api.resize(Math.ceil(app.getBoundingClientRect().height)))
+}
+
 const CUE_DESC: Record<CueType, string> = {
   blur: 'A soft frosted pulse — the research favourite (mimics dry-eye vision).',
   dim: 'The screen gently darkens and lifts.',
@@ -53,6 +58,7 @@ function renderOnboarding(): void {
     foot.appendChild(dots)
     foot.appendChild(footer)
     app.appendChild(foot)
+    fitWindow()
   }
 
   const nextBtn = (label = 'Continue', onClick: () => void) => {
@@ -205,7 +211,7 @@ function renderOnboarding(): void {
     const inner = el(`
       <div>
         <p class="eyebrow">All set</p>
-        <h1>You're ready to blink 👁️</h1>
+        <h1>You're ready to blink!</h1>
         <p class="muted">Blink lives in your menu bar. Open it any time to tweak things or pause.</p>
         <div class="privacy-note">Detection: <strong>${modeText}</strong> · Cue:
         <strong>${draft.cueType}</strong> · Sensitivity: <strong>${draft.sensitivity}</strong></div>
@@ -344,6 +350,7 @@ async function renderSettings(): Promise<void> {
   privCard.appendChild(rowNode('Delete all data', 'Wipe everything and return to first-run.', del))
   app.appendChild(privCard)
   void dataFolder
+  fitWindow()
 }
 
 // ---------- small UI builders ----------

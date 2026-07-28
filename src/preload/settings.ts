@@ -16,7 +16,8 @@ const api = {
   deleteAllData: (): Promise<void> => ipcRenderer.invoke(IPC.deleteAllData),
   finishOnboarding: (settings: Partial<Settings>): Promise<Settings> =>
     ipcRenderer.invoke(IPC.finishOnboarding, settings),
-  close: (): void => ipcRenderer.send(IPC.closeSettings)
+  close: (): void => ipcRenderer.send(IPC.closeSettings),
+  resize: (height: number): void => ipcRenderer.send(IPC.resizeSettings, height)
 }
 
 contextBridge.exposeInMainWorld('blinkSettings', api)
