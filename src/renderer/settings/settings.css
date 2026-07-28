@@ -296,6 +296,11 @@ input[type='color'] {
   border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
   border-radius: 10px;
   padding: 12px 14px;
+  margin-bottom: 4px;
+}
+/* The note already has its own teal border; drop the divider line of the row below it. */
+.privacy-note + .row {
+  border-top: none;
 }
 code {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
