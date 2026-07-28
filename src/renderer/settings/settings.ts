@@ -11,6 +11,7 @@ const api = window.blinkSettings
 const app = document.getElementById('app')!
 
 let settings: Settings
+let settingsFitted = false
 
 // ---------- helpers ----------
 
@@ -26,8 +27,8 @@ function fitWindow(): void {
 }
 
 const CUE_DESC: Record<CueType, string> = {
-  blur: 'A soft frosted pulse — the research favourite (mimics dry-eye vision).',
-  dim: 'The screen gently darkens and lifts.',
+  blur: 'A soft frosted pulse. Turn on Real frost below for a true macOS blur.',
+  dim: 'The screen gently darkens, then lifts.',
   glow: 'A soft glow breathes around the screen edges.'
 }
 
@@ -73,11 +74,11 @@ function renderOnboarding(): void {
       <div>
         <p class="eyebrow">Welcome to Blink</p>
         <h1>Give your eyes a break</h1>
-        <p class="muted">When we focus on a screen, we blink up to 4× less than normal — which
+        <p class="muted">When we focus on a screen, we blink up to 4× less than normal - which
         leaves eyes dry and sore. Blink gives you gentle, ambient reminders to blink, without
         popups that break your focus.</p>
         <div class="privacy-note">🔒 <strong>Private by design.</strong> Blink makes no network
-        connections at all. If you enable the optional webcam mode, everything runs on your Mac —
+        connections at all. If you enable the optional webcam mode, everything runs on your Mac -
         video frames are analysed in memory and never saved, shown, or sent anywhere.</div>
       </div>
     `)
@@ -105,7 +106,7 @@ function renderOnboarding(): void {
       })
       return c
     }
-    choices.appendChild(opt('timer', 'Timer (recommended to start)', 'A gentle reminder on a fixed schedule. No camera — nothing to allow.'))
+    choices.appendChild(opt('timer', 'Timer (recommended to start)', 'A gentle reminder on a fixed schedule. No camera - nothing to allow.'))
     choices.appendChild(opt('webcam', 'Webcam (opt-in)', 'Smarter: only nudges you when you actually stop blinking. 100% on-device.'))
 
     const cont = nextBtn('Continue', async () => {
@@ -115,7 +116,7 @@ function renderOnboarding(): void {
         const res = await api.requestCamera()
         if (res === 'denied') {
           draft.detectionMode = 'timer'
-          hint.textContent = 'Camera not allowed — Blink will use Timer mode. You can enable the camera later in Settings.'
+          hint.textContent = 'Camera not allowed - Blink will use Timer mode. You can enable the camera later in Settings.'
           return
         }
       }
@@ -129,7 +130,7 @@ function renderOnboarding(): void {
     const inner = el(`
       <div>
         <p class="eyebrow">Step 2 · Try the cues</p>
-        <h2>Which reminder do you notice — without losing your place?</h2>
+        <h2>Which reminder do you notice - without losing your place?</h2>
         <p class="tasting-text">Read this line while the cues play. A good cue nudges the corner of
         your attention just enough to blink, then fades away before it interrupts your train of
         thought.</p>
@@ -183,9 +184,9 @@ function renderOnboarding(): void {
     `)
     const choices = inner.querySelector('.choices')!
     const opts: [Sensitivity, string][] = [
-      ['relaxed', 'Relaxed — after 12s without a blink'],
-      ['standard', 'Standard — after 8s'],
-      ['attentive', 'Attentive — after 5s']
+      ['relaxed', 'Relaxed - after 12s without a blink'],
+      ['standard', 'Standard - after 8s'],
+      ['attentive', 'Attentive - after 5s']
     ]
     for (const [s, label] of opts) {
       const c = el(`<button class="choice ${draft.sensitivity === s ? 'active' : ''}">
@@ -237,14 +238,15 @@ async function renderSettings(): Promise<void> {
   app.appendChild(el(`<h1>Blink settings</h1>`))
 
   // --- Cue card ---
+  // Layout is kept height-stable across cue types: the description slot reserves a fixed
+  // height, and there is always exactly one "cue option" row (frost / colour / none), so
+  // switching cue type never adds or removes rows and nothing shifts.
   const cueCard = el('<div class="card"><h2>Reminder cue</h2></div>')
   const cueSeg = segment(['blur', 'dim', 'glow'], settings.cueType, (v) => update({ cueType: v as CueType }))
   cueCard.appendChild(rowNode('Cue type', CUE_DESC[settings.cueType], cueSeg, 'cue-desc'))
 
   const previewBtn = el('<button>Preview</button>')
-  previewBtn.addEventListener('click', () =>
-    api.previewCue(cuePayloadFrom(settings))
-  )
+  previewBtn.addEventListener('click', () => api.previewCue(cuePayloadFrom(settings)))
   cueCard.appendChild(rowNode('Preview', 'Fire the selected cue right now.', previewBtn))
 
   const slider = el(`<input type="range" min="0.2" max="1" step="0.05" value="${settings.intensity}" />`) as HTMLInputElement
@@ -252,18 +254,7 @@ async function renderSettings(): Promise<void> {
   slider.addEventListener('change', () => api.previewCue(cuePayloadFrom(settings)))
   cueCard.appendChild(rowNode('Intensity', 'Strength of the cue at its peak.', slider))
 
-  if (settings.cueType === 'glow') {
-    const color = el(`<input type="color" value="${settings.glowColor}" />`) as HTMLInputElement
-    color.addEventListener('change', () => update({ glowColor: color.value }))
-    cueCard.appendChild(rowNode('Glow colour', '', color))
-  }
-  if (settings.cueType === 'blur') {
-    cueCard.appendChild(
-      toggleRow('Real frost (macOS)', 'Use a true macOS vibrancy blur of the screen behind the cue.', settings.macVibrancyBlur, (v) =>
-        update({ macVibrancyBlur: v })
-      )
-    )
-  }
+  cueCard.appendChild(cueOptionRow())
   app.appendChild(cueCard)
 
   // --- Detection card ---
@@ -312,8 +303,8 @@ async function renderSettings(): Promise<void> {
   const statsCard = el('<div class="card"><h2>Today</h2></div>')
   const grid = el('<div class="stat-grid"></div>')
   const trend =
-    stats.bpmTrend === null ? '—' : `${stats.bpmTrend > 0 ? '+' : ''}${stats.bpmTrend.toFixed(1)}`
-  grid.appendChild(statNode(stats.todayAvgBpm === null ? '—' : stats.todayAvgBpm.toFixed(1), 'Avg blinks/min'))
+    stats.bpmTrend === null ? '-' : `${stats.bpmTrend > 0 ? '+' : ''}${stats.bpmTrend.toFixed(1)}`
+  grid.appendChild(statNode(stats.todayAvgBpm === null ? '-' : stats.todayAvgBpm.toFixed(1), 'Avg blinks/min'))
   grid.appendChild(statNode(String(stats.todayCues), 'Cues fired'))
   grid.appendChild(statNode(trend, 'vs yesterday'))
   statsCard.appendChild(grid)
@@ -350,7 +341,30 @@ async function renderSettings(): Promise<void> {
   privCard.appendChild(rowNode('Delete all data', 'Wipe everything and return to first-run.', del))
   app.appendChild(privCard)
   void dataFolder
-  fitWindow()
+  // Fit the window once; later toggles keep the layout height-stable, so the window
+  // never jumps as you change settings.
+  if (!settingsFitted) {
+    settingsFitted = true
+    fitWindow()
+  }
+}
+
+/** The single, always-present cue-specific option row (keeps the card height stable). */
+function cueOptionRow(): HTMLElement {
+  let row: HTMLElement
+  if (settings.cueType === 'blur') {
+    const sw = el(`<input type="checkbox" class="switch" ${settings.macVibrancyBlur ? 'checked' : ''} />`) as HTMLInputElement
+    sw.addEventListener('change', () => update({ macVibrancyBlur: sw.checked }))
+    row = rowNode('Real frost (macOS)', '', sw)
+  } else if (settings.cueType === 'glow') {
+    const color = el(`<input type="color" value="${settings.glowColor}" />`) as HTMLInputElement
+    color.addEventListener('change', () => update({ glowColor: color.value }))
+    row = rowNode('Glow colour', '', color)
+  } else {
+    row = rowNode('Extra options', '', el('<span class="sub">None for the dim cue</span>'))
+  }
+  row.classList.add('cue-option')
+  return row
 }
 
 // ---------- small UI builders ----------

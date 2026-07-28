@@ -5,7 +5,7 @@
   --muted: #6b7280;
   --border: #e3e6ea;
   --accent: #14b8a6; /* thin accents: slider, choice outline */
-  --accent-fill: #0f766e; /* solid buttons — deep enough for white text (AA) */
+  --accent-fill: #0f766e; /* solid buttons - deep enough for white text (AA) */
   --accent-ink: #0f766e; /* teal text on light surfaces */
   --accent-tint: rgba(15, 118, 110, 0.12); /* subtle selected background */
   --on-accent: #ffffff;
@@ -45,6 +45,7 @@ body {
 
 body {
   overflow-y: auto; /* scroll only when content is taller than the (capped) window */
+  scrollbar-gutter: stable; /* reserve the scrollbar space so content never shifts sideways */
 }
 
 #app {
@@ -103,6 +104,16 @@ p {
 .row .sub {
   font-size: 12px;
   color: var(--muted);
+}
+
+/* Reserve two lines for the cue description so switching cue type never resizes the row. */
+#cue-desc {
+  display: block;
+  min-height: 2.6em;
+}
+/* The always-present cue-option row keeps a stable height across blur / dim / glow. */
+.cue-option {
+  min-height: 44px;
 }
 
 button {
