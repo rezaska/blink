@@ -12,7 +12,7 @@ let flashTimer: ReturnType<typeof setTimeout> | null = null
  * Menu-bar icon states. macOS menu-bar glyphs (crisp + theme-adaptive) stand in for
  * bespoke eye artwork; `setTrayState` is the single seam where real template PNGs could
  * later replace the glyphs.
- *   monitoring → ◉   paused → ◌   no-camera → ⊘   (blink flash → –)
+ *   monitoring → ◉   paused → ◌   no-camera → ⊘   (blink flash → -)
  */
 const GLYPH: Record<TrayState, string> = {
   monitoring: '◉',
@@ -30,7 +30,7 @@ function applyState(state: TrayState): void {
 export function flashCue(): void {
   if (!tray) return
   if (flashTimer) clearTimeout(flashTimer)
-  tray.setTitle('–')
+  tray.setTitle('-')
   flashTimer = setTimeout(() => {
     flashTimer = null
     tray?.setTitle(currentTitle)
@@ -40,7 +40,7 @@ export function flashCue(): void {
 export function createTray(): void {
   tray = new Tray(nativeImage.createEmpty())
   tray.setTitle(currentTitle)
-  tray.setToolTip('Blink — ambient blink reminders')
+  tray.setToolTip('Blink - ambient blink reminders')
   rebuildMenu()
 }
 
@@ -48,7 +48,7 @@ export function rebuildMenu(): void {
   if (!tray) return
   const s = snapshot()
   applyState(s.trayState)
-  tray.setToolTip(`Blink — ${s.statusText}`)
+  tray.setToolTip(`Blink - ${s.statusText}`)
 
   const pauseSection: MenuItemConstructorOptions[] = s.paused
     ? [{ label: `Resume (paused until ${s.resumeText})`, click: () => resume() }]

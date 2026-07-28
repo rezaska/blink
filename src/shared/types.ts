@@ -72,7 +72,7 @@ export const DEFAULT_SETTINGS: Settings = {
   macVibrancyBlur: false
 }
 
-/** Per-day locally-stored stats (aggregates only — no raw event history). */
+/** Per-day locally-stored stats (aggregates only - no raw event history). */
 export interface DayStats {
   /** ISO date, e.g. "2026-07-22". */
   date: string

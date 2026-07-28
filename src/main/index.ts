@@ -12,7 +12,7 @@ import { getSettings } from './store'
 // Privileged scheme registration MUST happen before app `ready`.
 registerAppScheme()
 
-// Single instance — a second launch just focuses Settings.
+// Single instance - a second launch just focuses Settings.
 if (!app.requestSingleInstanceLock()) {
   app.quit()
 } else {

@@ -91,7 +91,7 @@ export class BlinkDetector {
       }
       return false
     }
-    // currently closed — wait for reopen past the (higher) open threshold.
+    // currently closed - wait for reopen past the (higher) open threshold.
     if (openness > this.opts.openThreshold) {
       const closedMs = timestampMs - this.closedAt
       this.closed = false

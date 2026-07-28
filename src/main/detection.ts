@@ -112,7 +112,7 @@ function onStatus(status: DetectorStatus): void {
     destroyDetectorWindow()
     startTimerLoop()
   } else if (status.state === 'running' && prev === 'no-face') {
-    // Returned from away — restart the window so we don't instantly fire "no blink".
+    // Returned from away - restart the window so we don't instantly fire "no blink".
     tracker.start(Date.now())
     trigger.reset()
   }

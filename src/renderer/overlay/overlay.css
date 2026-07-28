@@ -25,7 +25,7 @@ body {
 }
 
 /*
- * BLUR — frosted "breath" pulse. True blur of underlying apps is impossible from a
+ * BLUR - frosted "breath" pulse. True blur of underlying apps is impossible from a
  * transparent window (backdrop-filter samples in-page content only), so we approximate
  * with a soft neutral veil plus a faint radial vignette that reads as "focus softening".
  * The backdrop-filter is progressive enhancement where the compositor honours it.
@@ -51,12 +51,12 @@ body {
   -webkit-backdrop-filter: blur(7px);
 }
 
-/* DIM — black veil fading to ~24% opacity at peak. */
+/* DIM - black veil fading to ~24% opacity at peak. */
 #dim {
   background: rgba(0, 0, 0, 0.24);
 }
 
-/* EDGE GLOW — soft inset glow hugging the screen edges, teal by default. */
+/* EDGE GLOW - soft inset glow hugging the screen edges, teal by default. */
 #glow {
   box-shadow:
     inset 0 0 160px 60px var(--glow-color),

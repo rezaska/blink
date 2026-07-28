@@ -15,7 +15,7 @@ const TARGET_FPS = 10
 const FRAME_MS = 1000 / TARGET_FPS
 const NO_FACE_MS = 1500
 
-// Openness = 1 - max(eyeBlinkLeft, eyeBlinkRight). Blink score spikes ~0.7–1.0 while
+// Openness = 1 - max(eyeBlinkLeft, eyeBlinkRight). Blink score spikes ~0.7-1.0 while
 // blinking, so openness dips below ~0.5. Thresholds are tuned for this signal (not EAR).
 const blink = new BlinkDetector({
   closeThreshold: 0.5,

@@ -3,7 +3,7 @@ import { join } from 'node:path'
 
 /**
  * Manages one transparent, click-through, always-on-top overlay window PER display.
- * (One window per display — not one union window — so each gets its own correct
+ * (One window per display - not one union window - so each gets its own correct
  * scaleFactor and can float over its display's Space; see plan decision 1.)
  *
  * Known macOS limitation: even at `screen-saver` level a panel will not reliably draw

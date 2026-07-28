@@ -1,6 +1,6 @@
 /**
  * Cue trigger logic: decides WHEN to fire a blink cue, with a cooldown debounce.
- * Pure logic, no timers here — the caller supplies "now" and the current metrics.
+ * Pure logic, no timers here - the caller supplies "now" and the current metrics.
  *
  * Fires when EITHER the user hasn't blinked for `noBlinkMs` OR the rolling rate has
  * dropped below `minBpm` (only once the rate is reliable). After firing, a `cooldownMs`

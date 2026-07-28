@@ -3,7 +3,7 @@
  *
  * A cue rises from 0 → 1 over `fadeInMs`, holds at 1 for `holdMs`, then falls
  * 1 → 0 over `fadeOutMs`. The research basis (CHI 2014 "Stimulating a Blink")
- * calls for slow fades (~1.5–2s in, brief hold, ~1.5–2s out) so cues register in
+ * calls for slow fades (~1.5-2s in, brief hold, ~1.5-2s out) so cues register in
  * peripheral awareness without breaking concentration.
  */
 

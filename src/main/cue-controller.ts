@@ -3,7 +3,7 @@ import { fireVibrancyBlur } from './vibrancy-overlay'
 import { IPC, type CuePayload } from '../shared/types'
 
 /**
- * Single choke point for all cues — the tray, the trigger engine, and Settings "Preview"
+ * Single choke point for all cues - the tray, the trigger engine, and Settings "Preview"
  * all call `fireCue`. A blur cue with the macOS "real frost" preference is routed to the
  * native vibrancy overlay; every other cue renders in the CSS overlay windows.
  */

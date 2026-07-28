@@ -3,7 +3,7 @@ import { envelopeAt, totalDurationMs, DEFAULT_TIMING, type CueTiming } from '../
 
 /**
  * macOS "real frost" blur cue. A true `NSVisualEffectView` (vibrancy) actually blurs the
- * desktop content behind it — but its blur radius is fixed and can't be animated. So we
+ * desktop content behind it - but its blur radius is fixed and can't be animated. So we
  * render a full-screen, click-through vibrancy window per display and crossfade its whole
  * opacity along the cue envelope (a fade of real frost, not a radius pulse).
  *
@@ -40,7 +40,7 @@ function createVibrancyWindow(display: Display): BrowserWindow {
   win.setIgnoreMouseEvents(true, { forward: true })
   win.setAlwaysOnTop(true, 'screen-saver')
   win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true, skipTransformProcessType: true })
-  // Empty local page — the vibrancy material fills the window; nothing to render.
+  // Empty local page - the vibrancy material fills the window; nothing to render.
   void win.loadURL('data:text/html,<!doctype html><meta charset="utf-8">')
   return win
 }

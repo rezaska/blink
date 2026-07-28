@@ -7,7 +7,7 @@ import { app, session, type Session } from 'electron'
  *
  * In development we additionally allow the electron-vite dev server + HMR socket on
  * localhost, because the renderer is served over http/ws there. In a packaged build
- * (`app.isPackaged`) nothing on the network is ever allowed — no hostnames, no CDNs.
+ * (`app.isPackaged`) nothing on the network is ever allowed - no hostnames, no CDNs.
  */
 
 const LOCAL_SCHEMES = new Set([

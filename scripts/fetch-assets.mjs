@@ -3,7 +3,7 @@
  * node_modules and downloads the Face Landmarker model into `resources/` so the app
  * can load everything from disk via the local `app://` protocol.
  *
- * This is a DEVELOPER action run from Node tooling — NOT the app. The shipped app
+ * This is a DEVELOPER action run from Node tooling - NOT the app. The shipped app
  * never touches the network (see src/main/network-guard.ts). Run: `npm run assets`.
  */
 import { mkdir, copyFile, readdir, access, writeFile } from 'node:fs/promises'
@@ -41,7 +41,7 @@ async function copyWasm() {
 async function fetchModel() {
   await mkdir(modelDir, { recursive: true })
   if (await exists(modelPath)) {
-    console.log('✓ face_landmarker.task already present — skipping download')
+    console.log('✓ face_landmarker.task already present - skipping download')
     return
   }
   console.log('… downloading face_landmarker.task (one-time)')
