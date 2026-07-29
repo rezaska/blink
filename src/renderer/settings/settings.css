@@ -98,6 +98,9 @@ p {
 .row:first-of-type {
   border-top: none;
 }
+.row > :first-child {
+  min-width: 0; /* allow the label/description to wrap instead of pushing the control */
+}
 .row .label {
   font-weight: 500;
 }
@@ -141,6 +144,7 @@ button.ghost {
 
 .seg {
   display: inline-flex;
+  flex-shrink: 0; /* never let a long label on the left squeeze/collapse the segments */
   border: 1px solid var(--border);
   border-radius: 10px;
   overflow: hidden;
@@ -150,6 +154,9 @@ button.ghost {
   border-radius: 0;
   border-right: 1px solid var(--border);
   background: var(--card);
+  min-width: 62px; /* keep all options a consistent width so the control never jumps */
+  text-align: center;
+  white-space: nowrap;
 }
 .seg button:last-child {
   border-right: none;
