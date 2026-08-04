@@ -167,8 +167,28 @@ button.ghost {
 }
 
 input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
   width: 180px;
-  accent-color: var(--accent);
+  height: 16px;
+  background: transparent;
+  cursor: pointer;
+}
+/* Neutral track... */
+input[type='range']::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--border);
+}
+/* ...teal indicator. */
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  margin-top: -6px; /* centre the 16px thumb on the 4px track */
+  border-radius: 50%;
+  background: var(--accent);
 }
 input[type='number'] {
   width: 72px;
