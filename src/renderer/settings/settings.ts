@@ -335,29 +335,6 @@ function renderSettings(): void {
   )
   app.appendChild(genCard)
 
-  // --- Stats card --- (rendered immediately with placeholders, then filled async so a
-  // settings change never waits on the stats IPC before the UI updates)
-  const statsCard = el('<div class="card"><h2>Today</h2></div>')
-  const grid = el('<div class="stat-grid"></div>')
-  const bpmStat = statNode('–', 'Avg blinks/min')
-  const cuesStat = statNode('–', 'Cues fired')
-  const trendStat = statNode('–', 'vs yesterday')
-  grid.append(bpmStat, cuesStat, trendStat)
-  statsCard.appendChild(grid)
-  app.appendChild(statsCard)
-  void api.getStats().then((stats) => {
-    const setNum = (node: HTMLElement, text: string) => {
-      const n = node.querySelector('.num')
-      if (n) n.textContent = text
-    }
-    setNum(bpmStat, stats.todayAvgBpm === null ? '–' : stats.todayAvgBpm.toFixed(1))
-    setNum(cuesStat, String(stats.todayCues))
-    setNum(
-      trendStat,
-      stats.bpmTrend === null ? '–' : `${stats.bpmTrend > 0 ? '+' : ''}${stats.bpmTrend.toFixed(1)}`
-    )
-  })
-
   // --- Privacy card ---
   const privCard = el('<div class="card"><h2>Privacy &amp; data</h2></div>')
   privCard.appendChild(
@@ -451,10 +428,6 @@ function helpNode(text: string): HTMLElement {
   )
   wrap.querySelector('.tip')!.textContent = text
   return wrap
-}
-
-function statNode(num: string, cap: string): HTMLElement {
-  return el(`<div class="stat"><div class="num">${num}</div><div class="cap">${cap}</div></div>`)
 }
 
 function segment(values: string[], current: string, onPick: (v: string) => void): HTMLElement {
