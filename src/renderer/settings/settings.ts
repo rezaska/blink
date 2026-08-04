@@ -242,9 +242,8 @@ function renderSettings(): void {
   app.appendChild(el(`<h1>Blink settings</h1>`))
 
   // --- Cue card ---
-  // Layout is kept height-stable across cue types: the description slot reserves a fixed
-  // height, and there is always exactly one "cue option" row (frost / colour / none), so
-  // switching cue type never adds or removes rows and nothing shifts.
+  // The description slot reserves a fixed height so the "Cue type" row doesn't resize as
+  // the description text changes. Blur/Glow add one option row (frost / colour); Dim has none.
   const cueCard = el('<div class="card"><h2>Reminder cue</h2></div>')
   const cueSeg = segment(['blur', 'dim', 'glow'], settings.cueType, (v) => update({ cueType: v as CueType }))
   cueCard.appendChild(rowNode('Cue type', CUE_DESC[settings.cueType], cueSeg, 'cue-desc'))
@@ -266,7 +265,8 @@ function renderSettings(): void {
   slider.addEventListener('change', () => api.previewCue(cuePayloadFrom(settings)))
   cueCard.appendChild(rowNode('Intensity', 'Strength of the cue at its peak.', slider))
 
-  cueCard.appendChild(cueOptionRow())
+  const optionRow = cueOptionRow()
+  if (optionRow) cueCard.appendChild(optionRow)
   app.appendChild(cueCard)
 
   // --- Detection card ---
@@ -356,8 +356,8 @@ function renderSettings(): void {
   }
 }
 
-/** The single, always-present cue-specific option row (keeps the card height stable). */
-function cueOptionRow(): HTMLElement {
+/** The cue-specific option row: a frost toggle for Blur, a colour for Glow, none for Dim. */
+function cueOptionRow(): HTMLElement | null {
   let row: HTMLElement
   if (settings.cueType === 'blur') {
     const sw = el(`<input type="checkbox" class="switch" ${settings.macVibrancyBlur ? 'checked' : ''} />`) as HTMLInputElement
@@ -368,7 +368,7 @@ function cueOptionRow(): HTMLElement {
     color.addEventListener('change', () => update({ glowColor: color.value }))
     row = rowNode('Glow colour', 'Colour of the edge glow.', color)
   } else {
-    row = rowNode('Extra options', '', el('<span class="sub">None for the dim cue</span>'))
+    return null // Dim has no extra options.
   }
   row.classList.add('cue-option')
   return row
