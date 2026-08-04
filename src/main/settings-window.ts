@@ -14,8 +14,9 @@ import { ensureCameraAccess } from './permissions'
 
 /** The settings + onboarding window (a normal, focusable window). */
 
-// Fixed calibration window size, chosen to fit the tallest step (cue tasting) without scroll.
-const ONBOARDING_WIDTH = 560
+// Fixed width for both settings and calibration; width is never user-resizable.
+const WINDOW_WIDTH = 560
+// Fixed calibration height, chosen to fit the tallest step (cue tasting) without scroll.
 const ONBOARDING_HEIGHT = 640
 
 let win: BrowserWindow | null = null
@@ -30,9 +31,10 @@ export function openSettingsWindow(view: SettingsView = 'auto'): void {
   }
 
   win = new BrowserWindow({
-    width: 560,
+    width: WINDOW_WIDTH,
     height: 460,
-    minWidth: 460,
+    minWidth: WINDOW_WIDTH,
+    maxWidth: WINDOW_WIDTH, // lock the width; only height adapts
     minHeight: 260,
     useContentSize: true, // size the content area, not incl. the title bar
     title: 'Blink',
@@ -122,16 +124,18 @@ export function registerSettingsIpc(): void {
   ipcMain.on(IPC.resizeSettings, (_e, height: number) => {
     if (!win || win.isDestroyed()) return
     const area = screen.getDisplayNearestPoint(win.getBounds()).workArea
-    const [w, currentContentH] = win.getContentSize()
-    const [, winH] = win.getSize()
+    const [, currentContentH] = win.getContentSize()
+    const [winW, winH] = win.getSize()
     const chromeH = winH - currentContentH // title bar / frame height
+    const chromeW = winW - WINDOW_WIDTH // side frame width (0 on macOS)
     // Use nearly the whole work area (minus the frame + a small margin) so content fits
     // in one shot whenever the screen allows; only truly oversized content then scrolls.
     const maxContentH = Math.max(260, area.height - chromeH - 12)
     const h = Math.max(260, Math.min(Math.ceil(height), maxContentH))
-    if (Math.abs(currentContentH - h) > 4) win.setContentSize(w, h, false)
-    // Max window height = current content height; still shrinkable (with scroll).
-    win.setMaximumSize(area.width, h + chromeH)
+    if (Math.abs(currentContentH - h) > 4) win.setContentSize(WINDOW_WIDTH, h, false)
+    // Lock width; height ranges from 260 up to the content height (shrinkable, then scrolls).
+    win.setMinimumSize(WINDOW_WIDTH + chromeW, 260)
+    win.setMaximumSize(WINDOW_WIDTH + chromeW, h + chromeH)
   })
 
   // Calibration/onboarding: a fixed, non-resizable window sized for the tallest step,
@@ -141,7 +145,7 @@ export function registerSettingsIpc(): void {
     win.setResizable(true)
     win.setMaximumSize(0, 0) // clear the content cap so we can grow to the fixed size
     win.setMinimumSize(1, 1)
-    win.setContentSize(ONBOARDING_WIDTH, ONBOARDING_HEIGHT)
+    win.setContentSize(WINDOW_WIDTH, ONBOARDING_HEIGHT)
     win.center()
     win.setResizable(false)
   })
