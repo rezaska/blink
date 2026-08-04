@@ -254,7 +254,15 @@ function renderSettings(): void {
   cueCard.appendChild(rowNode('Preview', 'Fire the selected cue right now.', previewBtn))
 
   const slider = el(`<input type="range" min="0.2" max="1" step="0.05" value="${settings.intensity}" />`) as HTMLInputElement
-  slider.addEventListener('input', () => update({ intensity: Number(slider.value) }, false))
+  const setFill = () => {
+    const pct = ((Number(slider.value) - 0.2) / 0.8) * 100
+    slider.style.setProperty('--range-fill', `${pct}%`)
+  }
+  setFill()
+  slider.addEventListener('input', () => {
+    setFill()
+    update({ intensity: Number(slider.value) }, false)
+  })
   slider.addEventListener('change', () => api.previewCue(cuePayloadFrom(settings)))
   cueCard.appendChild(rowNode('Intensity', 'Strength of the cue at its peak.', slider))
 

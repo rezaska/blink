@@ -174,11 +174,15 @@ input[type='range'] {
   background: transparent;
   cursor: pointer;
 }
-/* Neutral track... */
+/* Teal up to the thumb, neutral after (fill % set from JS via --range-fill). */
 input[type='range']::-webkit-slider-runnable-track {
   height: 4px;
   border-radius: 999px;
-  background: var(--border);
+  background: linear-gradient(
+    to right,
+    var(--accent) var(--range-fill, 0%),
+    var(--border) var(--range-fill, 0%)
+  );
 }
 /* ...teal indicator. */
 input[type='range']::-webkit-slider-thumb {
