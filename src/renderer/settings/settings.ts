@@ -250,7 +250,7 @@ function renderSettings(): void {
 
   const previewBtn = el('<button>Preview</button>')
   previewBtn.addEventListener('click', () => api.previewCue(cuePayloadFrom(settings)))
-  cueCard.appendChild(rowNode('Preview', 'Fire the selected cue right now.', previewBtn))
+  cueCard.appendChild(rowNode('Preview', '', previewBtn))
 
   const slider = el(`<input type="range" min="0.2" max="1" step="0.05" value="${settings.intensity}" />`) as HTMLInputElement
   const setFill = () => {
@@ -263,7 +263,7 @@ function renderSettings(): void {
     update({ intensity: Number(slider.value) }, false)
   })
   slider.addEventListener('change', () => api.previewCue(cuePayloadFrom(settings)))
-  cueCard.appendChild(rowNode('Intensity', 'Strength of the cue at its peak.', slider))
+  cueCard.appendChild(rowNode('Intensity', '', slider))
 
   const optionRow = cueOptionRow()
   if (optionRow) cueCard.appendChild(optionRow)
@@ -305,16 +305,14 @@ function renderSettings(): void {
   // --- General card ---
   const genCard = el('<div class="card"><h2>General</h2></div>')
   genCard.appendChild(
-    toggleRow('Launch at login', 'Start Blink automatically when you log in.', settings.launchAtLogin, (v) =>
-      update({ launchAtLogin: v })
-    )
+    toggleRow('Launch at login', '', settings.launchAtLogin, (v) => update({ launchAtLogin: v }))
   )
   const recalib = el('<button class="ghost">Re-run calibration…</button>')
   recalib.addEventListener('click', () => {
     settings = { ...settings }
     renderOnboarding()
   })
-  genCard.appendChild(rowNode('Calibration', 'Redo the guided setup.', recalib))
+  genCard.appendChild(rowNode('Calibration', '', recalib))
   app.appendChild(genCard)
 
   // --- Privacy card ---
@@ -332,7 +330,7 @@ function renderSettings(): void {
     const res = await api.exportData()
     if (res.ok) exportBtn.textContent = 'Exported ✓'
   })
-  privCard.appendChild(rowNode('Export data', 'Save your settings + stats to a JSON file.', exportBtn))
+  privCard.appendChild(rowNode('Export data', '', exportBtn))
 
   const del = el('<button class="danger">Delete all data</button>')
   del.addEventListener('click', async () => {
@@ -345,7 +343,9 @@ function renderSettings(): void {
     settings = await api.getSettings()
     void renderSettings()
   })
-  privCard.appendChild(rowNode('Delete all data', 'Wipe everything and return to first-run.', del))
+  const delWrap = el('<div class="center-row"></div>')
+  delWrap.appendChild(del)
+  privCard.appendChild(delWrap)
   app.appendChild(privCard)
   void dataFolder
   // Fit the window once; later toggles keep the layout height-stable, so the window
@@ -366,7 +366,7 @@ function cueOptionRow(): HTMLElement | null {
   } else if (settings.cueType === 'glow') {
     const color = el(`<input type="color" value="${settings.glowColor}" />`) as HTMLInputElement
     color.addEventListener('change', () => update({ glowColor: color.value }))
-    row = rowNode('Glow colour', 'Colour of the edge glow.', color)
+    row = rowNode('Glow colour', '', color)
   } else {
     return null // Dim has no extra options.
   }

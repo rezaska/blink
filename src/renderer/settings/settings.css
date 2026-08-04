@@ -109,6 +109,12 @@ p {
   color: var(--muted);
 }
 
+.center-row {
+  display: flex;
+  justify-content: center;
+  padding-top: 14px;
+}
+
 /* Reserve two lines for the cue description so switching cue type never resizes the row. */
 #cue-desc {
   display: block;
