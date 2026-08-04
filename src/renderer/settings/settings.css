@@ -228,7 +228,7 @@ input[type='color'] {
   transition: background 0.15s;
 }
 .switch:checked {
-  background: var(--accent-fill);
+  background: var(--accent);
 }
 .switch::after {
   content: '';
