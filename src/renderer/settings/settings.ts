@@ -247,15 +247,11 @@ function renderSettings(): void {
   // switching cue type never adds or removes rows and nothing shifts.
   const cueCard = el('<div class="card"><h2>Reminder cue</h2></div>')
   const cueSeg = segment(['blur', 'dim', 'glow'], settings.cueType, (v) => update({ cueType: v as CueType }))
-  cueCard.appendChild(
-    rowNode('Cue type', CUE_DESC[settings.cueType], cueSeg, 'cue-desc', 'Which on-screen reminder to use.')
-  )
+  cueCard.appendChild(rowNode('Cue type', CUE_DESC[settings.cueType], cueSeg, 'cue-desc'))
 
   const previewBtn = el('<button>Preview</button>')
   previewBtn.addEventListener('click', () => api.previewCue(cuePayloadFrom(settings)))
-  cueCard.appendChild(
-    rowNode('Preview', '', previewBtn, undefined, 'Fires the selected cue right now so you can see it.')
-  )
+  cueCard.appendChild(rowNode('Preview', 'Fire the selected cue right now.', previewBtn))
 
   const slider = el(`<input type="range" min="0.2" max="1" step="0.05" value="${settings.intensity}" />`) as HTMLInputElement
   const setFill = () => {
@@ -268,7 +264,7 @@ function renderSettings(): void {
     update({ intensity: Number(slider.value) }, false)
   })
   slider.addEventListener('change', () => api.previewCue(cuePayloadFrom(settings)))
-  cueCard.appendChild(rowNode('Intensity', '', slider, undefined, 'How strong the cue is at its peak.'))
+  cueCard.appendChild(rowNode('Intensity', 'Strength of the cue at its peak.', slider))
 
   cueCard.appendChild(cueOptionRow())
   app.appendChild(cueCard)
@@ -281,9 +277,7 @@ function renderSettings(): void {
       settings.detectionMode === 'webcam' ? 'On-device webcam. Camera used only here.' : 'Fixed interval. No camera.',
       segment(['timer', 'webcam'], settings.detectionMode, async (v) => {
         await update({ detectionMode: v as DetectionMode })
-      }),
-      undefined,
-      'Timer reminds you on a fixed schedule with no camera. Webcam reminds you only when you actually stop blinking, using on-device face tracking. Video never leaves your Mac.'
+      })
     )
   )
   const sensSeg = segment(['relaxed', 'standard', 'attentive'], settings.sensitivity, (v) =>
@@ -293,36 +287,26 @@ function renderSettings(): void {
     rowNode(
       'Sensitivity',
       `Reminder after ${(settings.advancedNoBlinkMs ?? SENSITIVITY_MS[settings.sensitivity]) / 1000}s without a blink.`,
-      sensSeg,
-      undefined,
-      'How long without a blink before a reminder appears. Relaxed 12s, Standard 8s, Attentive 5s.'
+      sensSeg
     )
   )
 
   const secs = el(`<input type="number" min="2" max="60" step="1" value="${Math.round((settings.advancedNoBlinkMs ?? SENSITIVITY_MS[settings.sensitivity]) / 1000)}" />`) as HTMLInputElement
   secs.addEventListener('change', () => update({ advancedNoBlinkMs: Math.max(2, Number(secs.value)) * 1000 }))
-  detCard.appendChild(
-    rowNode('Advanced: exact seconds', '', secs, undefined, 'Set the exact seconds without a blink before a reminder. Overrides the preset above.')
-  )
+  detCard.appendChild(rowNode('Advanced: exact seconds', 'Override the preset.', secs))
 
   if (settings.detectionMode === 'timer') {
     const interval = el(`<input type="number" min="10" max="600" step="5" value="${Math.round(settings.timerIntervalMs / 1000)}" />`) as HTMLInputElement
     interval.addEventListener('change', () => update({ timerIntervalMs: Math.max(10, Number(interval.value)) * 1000 }))
-    detCard.appendChild(
-      rowNode('Timer interval (s)', '', interval, undefined, 'How often the timer reminder appears, in seconds.')
-    )
+    detCard.appendChild(rowNode('Timer interval (s)', 'How often the timer fires.', interval))
   }
   app.appendChild(detCard)
 
   // --- General card ---
   const genCard = el('<div class="card"><h2>General</h2></div>')
   genCard.appendChild(
-    toggleRow(
-      'Launch at login',
-      '',
-      settings.launchAtLogin,
-      (v) => update({ launchAtLogin: v }),
-      'Start Blink automatically when you log in.'
+    toggleRow('Launch at login', 'Start Blink automatically when you log in.', settings.launchAtLogin, (v) =>
+      update({ launchAtLogin: v })
     )
   )
   const recalib = el('<button class="ghost">Re-run calibration…</button>')
@@ -330,9 +314,7 @@ function renderSettings(): void {
     settings = { ...settings }
     renderOnboarding()
   })
-  genCard.appendChild(
-    rowNode('Calibration', '', recalib, undefined, 'Reopen the quick guided setup to re-pick your cue and sensitivity.')
-  )
+  genCard.appendChild(rowNode('Calibration', 'Redo the guided setup.', recalib))
   app.appendChild(genCard)
 
   // --- Privacy card ---
@@ -343,18 +325,14 @@ function renderSettings(): void {
   )
   const reveal = el('<button>Reveal data folder</button>')
   reveal.addEventListener('click', () => api.revealDataFolder())
-  privCard.appendChild(
-    rowNode('Local data', '', reveal, undefined, "Opens the folder that holds Blink's local data file, so you can see exactly where your data lives.")
-  )
+  privCard.appendChild(rowNode('Local data', 'See exactly where your data lives.', reveal))
 
   const exportBtn = el('<button>Export…</button>')
   exportBtn.addEventListener('click', async () => {
     const res = await api.exportData()
     if (res.ok) exportBtn.textContent = 'Exported ✓'
   })
-  privCard.appendChild(
-    rowNode('Export data', '', exportBtn, undefined, 'Save your settings and stats to a JSON file of your choice.')
-  )
+  privCard.appendChild(rowNode('Export data', 'Save your settings + stats to a JSON file.', exportBtn))
 
   const del = el('<button class="danger">Delete all data</button>')
   del.addEventListener('click', async () => {
@@ -367,9 +345,7 @@ function renderSettings(): void {
     settings = await api.getSettings()
     void renderSettings()
   })
-  privCard.appendChild(
-    rowNode('Delete all data', '', del, undefined, 'Wipe all settings and stats and return Blink to its first-run state.')
-  )
+  privCard.appendChild(rowNode('Delete all data', 'Wipe everything and return to first-run.', del))
   app.appendChild(privCard)
   void dataFolder
   // Fit the window once; later toggles keep the layout height-stable, so the window
@@ -386,17 +362,11 @@ function cueOptionRow(): HTMLElement {
   if (settings.cueType === 'blur') {
     const sw = el(`<input type="checkbox" class="switch" ${settings.macVibrancyBlur ? 'checked' : ''} />`) as HTMLInputElement
     sw.addEventListener('change', () => update({ macVibrancyBlur: sw.checked }))
-    row = rowNode(
-      'Real frost (macOS)',
-      '',
-      sw,
-      undefined,
-      'On: a true macOS blur of whatever is behind the cue, faded in and out. Off: a lighter frosted veil. macOS only.'
-    )
+    row = rowNode('Real frost (macOS)', 'A true macOS blur of the screen behind the cue.', sw)
   } else if (settings.cueType === 'glow') {
     const color = el(`<input type="color" value="${settings.glowColor}" />`) as HTMLInputElement
     color.addEventListener('change', () => update({ glowColor: color.value }))
-    row = rowNode('Glow colour', '', color, undefined, 'The colour of the glow around the screen edges.')
+    row = rowNode('Glow colour', 'Colour of the edge glow.', color)
   } else {
     row = rowNode('Extra options', '', el('<span class="sub">None for the dim cue</span>'))
   }
@@ -406,28 +376,12 @@ function cueOptionRow(): HTMLElement {
 
 // ---------- small UI builders ----------
 
-function rowNode(
-  label: string,
-  sub: string,
-  control: HTMLElement,
-  subId?: string,
-  help?: string
-): HTMLElement {
+function rowNode(label: string, sub: string, control: HTMLElement, subId?: string): HTMLElement {
   const row = el('<div class="row"></div>')
   const left = el(`<div><div class="label">${label}</div>${sub ? `<div class="sub"${subId ? ` id="${subId}"` : ''}>${sub}</div>` : ''}</div>`)
-  if (help) left.querySelector('.label')!.appendChild(helpNode(help))
   row.appendChild(left)
   row.appendChild(control)
   return row
-}
-
-/** A small "?" badge whose tooltip explains a setting (shown on hover or focus/click). */
-function helpNode(text: string): HTMLElement {
-  const wrap = el(
-    '<span class="help-wrap"><button type="button" class="help" aria-label="What does this do?">?</button><span class="tip" role="tooltip"></span></span>'
-  )
-  wrap.querySelector('.tip')!.textContent = text
-  return wrap
 }
 
 function segment(values: string[], current: string, onPick: (v: string) => void): HTMLElement {
@@ -440,16 +394,10 @@ function segment(values: string[], current: string, onPick: (v: string) => void)
   return seg
 }
 
-function toggleRow(
-  label: string,
-  sub: string,
-  checked: boolean,
-  onChange: (v: boolean) => void,
-  help?: string
-): HTMLElement {
+function toggleRow(label: string, sub: string, checked: boolean, onChange: (v: boolean) => void): HTMLElement {
   const input = el(`<input type="checkbox" class="switch" ${checked ? 'checked' : ''} />`) as HTMLInputElement
   input.addEventListener('change', () => onChange(input.checked))
-  return rowNode(label, sub, input, undefined, help)
+  return rowNode(label, sub, input)
 }
 
 /**
