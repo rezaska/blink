@@ -11,7 +11,6 @@ const api = window.blinkSettings
 const app = document.getElementById('app')!
 
 let settings: Settings
-let settingsFitted = false
 
 // ---------- helpers ----------
 
@@ -350,12 +349,9 @@ function renderSettings(): void {
   privCard.appendChild(delWrap)
   app.appendChild(privCard)
   void dataFolder
-  // Fit the window once; later toggles keep the layout height-stable, so the window
-  // never jumps as you change settings.
-  if (!settingsFitted) {
-    settingsFitted = true
-    fitWindow()
-  }
+  // Size the window to the full content (capped to the screen, then it scrolls), so you
+  // can see everything at once whenever it fits.
+  fitWindow()
 }
 
 /** The cue-specific option row: a frost toggle for Blur, a colour for Glow, none for Dim. */

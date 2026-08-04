@@ -112,13 +112,14 @@ export function registerSettingsIpc(): void {
     app.dock?.hide()
   })
 
-  // Resize the window to fit the rendered content (capped to the screen), so the
-  // window hugs the content rather than leaving lots of empty space.
+  // Resize the window to fit the full rendered content so everything shows at once.
+  // Capped to ~90% of the screen's work area; taller content then scrolls (small screens).
   ipcMain.on(IPC.resizeSettings, (_e, height: number) => {
     if (!win || win.isDestroyed()) return
-    const [w] = win.getContentSize()
+    const [w, currentH] = win.getContentSize()
     const maxH = Math.floor(screen.getDisplayNearestPoint(win.getBounds()).workArea.height * 0.9)
     const h = Math.max(260, Math.min(Math.ceil(height), maxH))
-    win.setContentSize(w, h, false)
+    // Skip trivial changes so switching options doesn't nudge the window around.
+    if (Math.abs(currentH - h) > 4) win.setContentSize(w, h, false)
   })
 }
