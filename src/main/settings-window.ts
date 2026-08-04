@@ -14,6 +14,10 @@ import { ensureCameraAccess } from './permissions'
 
 /** The settings + onboarding window (a normal, focusable window). */
 
+// Fixed calibration window size, chosen to fit the tallest step (cue tasting) without scroll.
+const ONBOARDING_WIDTH = 560
+const ONBOARDING_HEIGHT = 640
+
 let win: BrowserWindow | null = null
 
 export type SettingsView = 'auto' | 'onboarding' | 'settings'
@@ -128,5 +132,17 @@ export function registerSettingsIpc(): void {
     if (Math.abs(currentContentH - h) > 4) win.setContentSize(w, h, false)
     // Max window height = current content height; still shrinkable (with scroll).
     win.setMaximumSize(area.width, h + chromeH)
+  })
+
+  // Calibration/onboarding: a fixed, non-resizable window sized for the tallest step,
+  // so nothing resizes or scrolls as you move through the flow.
+  ipcMain.on(IPC.onboardingSize, () => {
+    if (!win || win.isDestroyed()) return
+    win.setResizable(true)
+    win.setMaximumSize(0, 0) // clear the content cap so we can grow to the fixed size
+    win.setMinimumSize(1, 1)
+    win.setContentSize(ONBOARDING_WIDTH, ONBOARDING_HEIGHT)
+    win.center()
+    win.setResizable(false)
   })
 }

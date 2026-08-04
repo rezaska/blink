@@ -47,6 +47,8 @@ function renderOnboarding(): void {
   const draft: Settings = { ...settings }
   let step = 0
   const STEPS = 5
+  // Calibration uses a fixed, non-resizable window so steps don't resize or scroll.
+  api.onboardingSize()
   // Ordered steps, so a Back button can return to the previous one (declarations hoist).
   const steps: Array<() => void> = [welcome, detection, tasting, sensitivity, done]
 
@@ -72,7 +74,7 @@ function renderOnboarding(): void {
     foot.appendChild(dots)
     foot.appendChild(footer)
     app.appendChild(foot)
-    fitWindow()
+    // No per-step fit: the window is a fixed calibration size (see api.onboardingSize).
   }
 
   const nextBtn = (label = 'Continue', onClick: () => void) => {
