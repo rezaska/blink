@@ -47,8 +47,10 @@ function renderOnboarding(): void {
   const draft: Settings = { ...settings }
   let step = 0
   const STEPS = 5
-  // Calibration uses a fixed, non-resizable window so steps don't resize or scroll.
+  // Calibration uses a fixed, non-resizable window so steps don't resize or scroll,
+  // with its content centered.
   api.onboardingSize()
+  document.body.classList.add('onboarding')
   // Ordered steps, so a Back button can return to the previous one (declarations hoist).
   const steps: Array<() => void> = [welcome, detection, tasting, sensitivity, done]
 
@@ -240,6 +242,7 @@ function renderOnboarding(): void {
 function renderSettings(): void {
   const dataFolder = '' // shown via reveal button; path not needed inline
 
+  document.body.classList.remove('onboarding')
   app.innerHTML = ''
   app.appendChild(el(`<h1>Blink settings</h1>`))
 

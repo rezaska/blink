@@ -54,6 +54,27 @@ body {
   padding: 18px 22px 22px;
 }
 
+/* Calibration: center the content in the fixed window, text centered. */
+body.onboarding {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+body.onboarding #app {
+  width: 100%;
+  text-align: center;
+  padding-top: 22px;
+  padding-bottom: 22px;
+}
+body.onboarding .choice {
+  justify-content: center;
+  text-align: center;
+}
+body.onboarding .tasting-text {
+  border-left: none;
+  padding-left: 0;
+}
+
 h1 {
   font-size: 21px;
   margin: 0 0 12px;
