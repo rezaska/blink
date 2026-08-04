@@ -121,7 +121,9 @@ export function registerSettingsIpc(): void {
     const [w, currentContentH] = win.getContentSize()
     const [, winH] = win.getSize()
     const chromeH = winH - currentContentH // title bar / frame height
-    const maxContentH = Math.floor(area.height * 0.9)
+    // Use nearly the whole work area (minus the frame + a small margin) so content fits
+    // in one shot whenever the screen allows; only truly oversized content then scrolls.
+    const maxContentH = Math.max(260, area.height - chromeH - 12)
     const h = Math.max(260, Math.min(Math.ceil(height), maxContentH))
     if (Math.abs(currentContentH - h) > 4) win.setContentSize(w, h, false)
     // Max window height = current content height; still shrinkable (with scroll).

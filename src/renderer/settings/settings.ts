@@ -22,7 +22,8 @@ function el(html: string): HTMLElement {
 
 /** Ask the main process to size the window to the rendered content. */
 function fitWindow(): void {
-  requestAnimationFrame(() => api.resize(Math.ceil(app.getBoundingClientRect().height)))
+  // +2px buffer so a fractional pixel never triggers a scrollbar.
+  requestAnimationFrame(() => api.resize(Math.ceil(app.getBoundingClientRect().height) + 2))
 }
 
 const CUE_DESC: Record<CueType, string> = {
