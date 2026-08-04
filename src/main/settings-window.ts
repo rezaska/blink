@@ -114,12 +114,17 @@ export function registerSettingsIpc(): void {
 
   // Resize the window to fit the full rendered content so everything shows at once.
   // Capped to ~90% of the screen's work area; taller content then scrolls (small screens).
+  // Also cap the window's max height to the content, so it can't be dragged taller than needed.
   ipcMain.on(IPC.resizeSettings, (_e, height: number) => {
     if (!win || win.isDestroyed()) return
-    const [w, currentH] = win.getContentSize()
-    const maxH = Math.floor(screen.getDisplayNearestPoint(win.getBounds()).workArea.height * 0.9)
-    const h = Math.max(260, Math.min(Math.ceil(height), maxH))
-    // Skip trivial changes so switching options doesn't nudge the window around.
-    if (Math.abs(currentH - h) > 4) win.setContentSize(w, h, false)
+    const area = screen.getDisplayNearestPoint(win.getBounds()).workArea
+    const [w, currentContentH] = win.getContentSize()
+    const [, winH] = win.getSize()
+    const chromeH = winH - currentContentH // title bar / frame height
+    const maxContentH = Math.floor(area.height * 0.9)
+    const h = Math.max(260, Math.min(Math.ceil(height), maxContentH))
+    if (Math.abs(currentContentH - h) > 4) win.setContentSize(w, h, false)
+    // Max window height = current content height; still shrinkable (with scroll).
+    win.setMaximumSize(area.width, h + chromeH)
   })
 }
