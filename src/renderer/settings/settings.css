@@ -51,16 +51,16 @@ body {
 #app {
   max-width: 560px;
   margin: 0 auto;
-  padding: 24px 24px 28px;
+  padding: 18px 22px 22px;
 }
 
 h1 {
-  font-size: 22px;
-  margin: 0 0 4px;
+  font-size: 21px;
+  margin: 0 0 12px;
 }
 h2 {
   font-size: 15px;
-  margin: 0 0 12px;
+  margin: 0 0 6px;
   letter-spacing: 0.01em;
 }
 p {
@@ -82,9 +82,9 @@ p {
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 14px;
-  padding: 20px;
+  padding: 14px 18px;
   box-shadow: var(--shadow);
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .row {
@@ -92,7 +92,7 @@ p {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 12px 0;
+  padding: 9px 0;
   border-top: 1px solid var(--border);
 }
 .row:first-of-type {
@@ -112,7 +112,7 @@ p {
 .center-row {
   display: flex;
   justify-content: center;
-  padding-top: 14px;
+  padding-top: 10px;
 }
 
 /* Reserve two lines for the cue description so switching cue type never resizes the row. */
@@ -122,7 +122,7 @@ p {
 }
 /* The always-present cue-option row keeps a stable height across blur / dim / glow. */
 .cue-option {
-  min-height: 44px;
+  min-height: 38px;
 }
 
 button {
