@@ -280,22 +280,24 @@ function renderSettings(): void {
       })
     )
   )
-  const sensSeg = segment(['relaxed', 'standard', 'attentive'], settings.sensitivity, (v) =>
-    update({ sensitivity: v as Sensitivity, advancedNoBlinkMs: null })
-  )
-  detCard.appendChild(
-    rowNode(
-      'Sensitivity',
-      `Reminder after ${(settings.advancedNoBlinkMs ?? SENSITIVITY_MS[settings.sensitivity]) / 1000}s without a blink.`,
-      sensSeg
+  // Sensitivity + exact seconds only matter in webcam mode (they gate the no-blink
+  // threshold); the timer interval only matters in timer mode. Show only what applies.
+  if (settings.detectionMode === 'webcam') {
+    const sensSeg = segment(['relaxed', 'standard', 'attentive'], settings.sensitivity, (v) =>
+      update({ sensitivity: v as Sensitivity, advancedNoBlinkMs: null })
     )
-  )
+    detCard.appendChild(
+      rowNode(
+        'Sensitivity',
+        `Reminder after ${(settings.advancedNoBlinkMs ?? SENSITIVITY_MS[settings.sensitivity]) / 1000}s without a blink.`,
+        sensSeg
+      )
+    )
 
-  const secs = el(`<input type="number" min="2" max="60" step="1" value="${Math.round((settings.advancedNoBlinkMs ?? SENSITIVITY_MS[settings.sensitivity]) / 1000)}" />`) as HTMLInputElement
-  secs.addEventListener('change', () => update({ advancedNoBlinkMs: Math.max(2, Number(secs.value)) * 1000 }))
-  detCard.appendChild(rowNode('Advanced: exact seconds', 'Override the preset.', secs))
-
-  if (settings.detectionMode === 'timer') {
+    const secs = el(`<input type="number" min="2" max="60" step="1" value="${Math.round((settings.advancedNoBlinkMs ?? SENSITIVITY_MS[settings.sensitivity]) / 1000)}" />`) as HTMLInputElement
+    secs.addEventListener('change', () => update({ advancedNoBlinkMs: Math.max(2, Number(secs.value)) * 1000 }))
+    detCard.appendChild(rowNode('Advanced: exact seconds', 'Override the preset.', secs))
+  } else {
     const interval = el(`<input type="number" min="10" max="600" step="5" value="${Math.round(settings.timerIntervalMs / 1000)}" />`) as HTMLInputElement
     interval.addEventListener('change', () => update({ timerIntervalMs: Math.max(10, Number(interval.value)) * 1000 }))
     detCard.appendChild(rowNode('Timer interval (s)', 'How often the timer fires.', interval))
