@@ -1,47 +1,73 @@
-import { Menu, Tray, nativeImage, app, type MenuItemConstructorOptions } from 'electron'
+import {
+  Menu,
+  Tray,
+  nativeImage,
+  app,
+  type NativeImage,
+  type MenuItemConstructorOptions
+} from 'electron'
+import { join } from 'node:path'
 import { snapshot, pauseFor, pauseUntilTomorrow, resume, type TrayState } from './detection'
 import { openSettingsWindow } from './settings-window'
 
 const MIN = 60_000
 
 let tray: Tray | null = null
-let currentTitle = '◉'
 let flashTimer: ReturnType<typeof setTimeout> | null = null
+let icons: Record<'open' | 'closed' | 'slash', NativeImage>
+let currentImage: NativeImage
 
 /**
- * Menu-bar icon states. macOS menu-bar glyphs (crisp + theme-adaptive) stand in for
- * bespoke eye artwork; `setTrayState` is the single seam where real template PNGs could
- * later replace the glyphs.
- *   monitoring → ◉   paused → ◌   no-camera → ⊘   (blink flash → -)
+ * Menu-bar icon = a monochrome eye template (matches the app icon). macOS recolors
+ * template images for light/dark menu bars automatically.
+ *   monitoring → open eye   paused → closed eye   no-camera → eye with slash
+ * A cue briefly flashes the closed eye (a blink).
  */
-const GLYPH: Record<TrayState, string> = {
-  monitoring: '◉',
-  paused: '◌',
-  'no-camera': '⊘'
+const STATE_ICON: Record<TrayState, 'open' | 'closed' | 'slash'> = {
+  monitoring: 'open',
+  paused: 'closed',
+  'no-camera': 'slash'
 }
 
-function applyState(state: TrayState): void {
-  currentTitle = GLYPH[state] ?? '◉'
-  if (flashTimer) return // don't stomp an in-progress blink flash
-  tray?.setTitle(currentTitle)
+function trayIconDir(): string {
+  return app.isPackaged
+    ? join(process.resourcesPath, 'tray')
+    : join(app.getAppPath(), 'resources', 'tray')
 }
 
-/** Briefly animate a "blink" in the menu bar when a cue fires. */
-export function flashCue(): void {
-  if (!tray) return
-  if (flashTimer) clearTimeout(flashTimer)
-  tray.setTitle('-')
-  flashTimer = setTimeout(() => {
-    flashTimer = null
-    tray?.setTitle(currentTitle)
-  }, 240)
+function loadIcon(file: string): NativeImage {
+  const img = nativeImage.createFromPath(join(trayIconDir(), file)) // auto-loads @2x
+  img.setTemplateImage(true)
+  return img
 }
 
 export function createTray(): void {
-  tray = new Tray(nativeImage.createEmpty())
-  tray.setTitle(currentTitle)
+  icons = {
+    open: loadIcon('eye-openTemplate.png'),
+    closed: loadIcon('eye-closedTemplate.png'),
+    slash: loadIcon('eye-slashTemplate.png')
+  }
+  currentImage = icons.open
+  tray = new Tray(currentImage)
   tray.setToolTip('Blink - ambient blink reminders')
   rebuildMenu()
+}
+
+function applyState(state: TrayState): void {
+  currentImage = icons[STATE_ICON[state]]
+  if (flashTimer) return // don't stomp an in-progress blink flash
+  tray?.setImage(currentImage)
+}
+
+/** Briefly blink (closed eye) in the menu bar when a cue fires. */
+export function flashCue(): void {
+  if (!tray) return
+  if (flashTimer) clearTimeout(flashTimer)
+  tray.setImage(icons.closed)
+  flashTimer = setTimeout(() => {
+    flashTimer = null
+    tray?.setImage(currentImage)
+  }, 240)
 }
 
 export function rebuildMenu(): void {

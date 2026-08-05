@@ -9,6 +9,7 @@
   "scripts": {
     "assets": "node scripts/fetch-assets.mjs",
     "icon": "unset ELECTRON_RUN_AS_NODE; electron scripts/render-icon.cjs",
+    "tray-icons": "unset ELECTRON_RUN_AS_NODE; electron scripts/render-tray-icons.cjs",
     "dev": "unset ELECTRON_RUN_AS_NODE; electron-vite dev",
     "build": "electron-vite build",
     "preview": "unset ELECTRON_RUN_AS_NODE; electron-vite preview",
