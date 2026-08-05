@@ -1,0 +1,17 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2dd4bf"/>
+      <stop offset="1" stop-color="#0d9488"/>
+    </linearGradient>
+  </defs>
+
+  <!-- macOS-style rounded-square (squircle-ish) background -->
+  <rect x="112" y="112" width="800" height="800" rx="185" ry="185" fill="url(#bg)"/>
+
+  <!-- Eye: white almond outline with a filled iris -->
+  <g fill="none" stroke="#ffffff" stroke-width="42" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 282 512 C 400 372, 624 372, 742 512 C 624 652, 400 652, 282 512 Z"/>
+  </g>
+  <circle cx="512" cy="512" r="82" fill="#ffffff"/>
+</svg>
