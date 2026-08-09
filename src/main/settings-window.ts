@@ -18,15 +18,27 @@ import { ensureCameraAccess } from './permissions'
 const WINDOW_WIDTH = 560
 // Opened in the user's browser via shell.openExternal — the app makes no request itself.
 const PRIVACY_URL = 'https://www.rezasoleimani.ca/blink/privacy/'
+const KOFI_URL = 'https://ko-fi.com/rezasoleimani'
 // Fixed calibration height, chosen to fit the tallest step (cue tasting) without scroll.
 const ONBOARDING_HEIGHT = 640
 
 let win: BrowserWindow | null = null
 
-export type SettingsView = 'auto' | 'onboarding' | 'settings'
+export type SettingsView = 'auto' | 'onboarding' | 'settings' | 'support'
+
+function loadView(w: BrowserWindow, view: SettingsView): void {
+  const search = `view=${view}`
+  const devUrl = process.env['ELECTRON_RENDERER_URL']
+  if (devUrl) {
+    void w.loadURL(`${devUrl}/settings/index.html?${search}`)
+  } else {
+    void w.loadFile(join(__dirname, '../renderer/settings/index.html'), { search })
+  }
+}
 
 export function openSettingsWindow(view: SettingsView = 'auto'): void {
   if (win && !win.isDestroyed()) {
+    loadView(win, view) // navigate to the requested view even if a window is already open
     win.show()
     win.focus()
     return
@@ -57,13 +69,7 @@ export function openSettingsWindow(view: SettingsView = 'auto'): void {
     console.error('[settings] did-fail-load', code, desc, url)
   })
 
-  const search = `view=${view}`
-  const devUrl = process.env['ELECTRON_RENDERER_URL']
-  if (devUrl) {
-    void win.loadURL(`${devUrl}/settings/index.html?${search}`)
-  } else {
-    void win.loadFile(join(__dirname, '../renderer/settings/index.html'), { search })
-  }
+  loadView(win, view)
 
   // Show the Dock icon while a real window is open so it can be focused / cmd-tabbed.
   app.dock?.show()
@@ -115,6 +121,7 @@ export function registerSettingsIpc(): void {
   })
 
   ipcMain.on(IPC.openPrivacy, () => void shell.openExternal(PRIVACY_URL))
+  ipcMain.on(IPC.openKofi, () => void shell.openExternal(KOFI_URL))
 
   ipcMain.on(IPC.closeSettings, () => {
     // Menu-bar app: closing the window just hides the UI; app keeps running.

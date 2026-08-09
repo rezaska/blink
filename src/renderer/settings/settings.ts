@@ -419,6 +419,30 @@ async function update(patch: Partial<Settings>, rerender = true): Promise<void> 
   settings = await api.setSettings(patch)
 }
 
+// ---------- support ----------
+
+function renderSupport(): void {
+  document.body.classList.remove('onboarding')
+  app.innerHTML = ''
+  app.appendChild(el('<h1>Support Blink</h1>'))
+
+  const card = el('<div class="card"></div>')
+  card.appendChild(
+    el(
+      `<p class="muted">Blink is free, private, and made with care. If it has helped keep your
+      eyes comfortable, a small tip on Ko-fi supports its ongoing development. Thank you.</p>`
+    )
+  )
+  const open = el('<button class="primary">Open Ko-fi ↗</button>')
+  open.addEventListener('click', () => api.openKofi())
+  card.appendChild(open)
+  card.appendChild(
+    el('<p class="hint">This opens ko-fi.com in your browser. Blink itself sends nothing.</p>')
+  )
+  app.appendChild(card)
+  fitWindow()
+}
+
 // ---------- bootstrap ----------
 
 async function init(): Promise<void> {
@@ -427,7 +451,8 @@ async function init(): Promise<void> {
   let view = params.get('view') ?? 'auto'
   if (view === 'auto') view = await api.getInitialView()
   if (view === 'onboarding') renderOnboarding()
-  else void renderSettings()
+  else if (view === 'support') renderSupport()
+  else renderSettings()
 }
 
 void init()

@@ -110,5 +110,6 @@ export const IPC = {
   closeSettings: 'settings:close',
   resizeSettings: 'settings:resize',
   onboardingSize: 'settings:onboardingSize',
-  openPrivacy: 'settings:openPrivacy'
+  openPrivacy: 'settings:openPrivacy',
+  openKofi: 'settings:openKofi'
 } as const
