@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, screen } from 'electron'
+import { app, BrowserWindow, ipcMain, screen, shell } from 'electron'
 import { join } from 'node:path'
 import { IPC, type Settings, type CuePayload } from '../shared/types'
 import {
@@ -16,6 +16,8 @@ import { ensureCameraAccess } from './permissions'
 
 // Fixed width for both settings and calibration; width is never user-resizable.
 const WINDOW_WIDTH = 560
+// Opened in the user's browser via shell.openExternal — the app makes no request itself.
+const PRIVACY_URL = 'https://www.rezasoleimani.ca/blink/privacy/'
 // Fixed calibration height, chosen to fit the tallest step (cue tasting) without scroll.
 const ONBOARDING_HEIGHT = 640
 
@@ -111,6 +113,8 @@ export function registerSettingsIpc(): void {
     await applySettings()
     return next
   })
+
+  ipcMain.on(IPC.openPrivacy, () => void shell.openExternal(PRIVACY_URL))
 
   ipcMain.on(IPC.closeSettings, () => {
     // Menu-bar app: closing the window just hides the UI; app keeps running.

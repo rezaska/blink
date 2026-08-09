@@ -18,7 +18,8 @@ const api = {
     ipcRenderer.invoke(IPC.finishOnboarding, settings),
   close: (): void => ipcRenderer.send(IPC.closeSettings),
   resize: (height: number): void => ipcRenderer.send(IPC.resizeSettings, height),
-  onboardingSize: (): void => ipcRenderer.send(IPC.onboardingSize)
+  onboardingSize: (): void => ipcRenderer.send(IPC.onboardingSize),
+  openPrivacy: (): void => ipcRenderer.send(IPC.openPrivacy)
 }
 
 contextBridge.exposeInMainWorld('blinkSettings', api)

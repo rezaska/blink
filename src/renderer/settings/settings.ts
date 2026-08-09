@@ -329,6 +329,10 @@ function renderSettings(): void {
     No accounts, analytics, updater, or crash reporting. Your settings and stats are stored only on this
     Mac, as plain JSON.</div>`)
   )
+  const policyBtn = el('<button>View ↗</button>')
+  policyBtn.addEventListener('click', () => api.openPrivacy())
+  privCard.appendChild(rowNode('Privacy policy', '', policyBtn))
+
   const reveal = el('<button>Reveal data folder</button>')
   reveal.addEventListener('click', () => api.revealDataFolder())
   privCard.appendChild(rowNode('Local data', 'See exactly where your data lives.', reveal))
