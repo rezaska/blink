@@ -89,3 +89,9 @@ One thing worth knowing about the overlay: it sits on top of normal apps and vid
 true full-screen Mac app (on its own Space) can cover it up. That is a limit of macOS.
 
 Blink is built for macOS first. The code is kept tidy so Windows and Linux can come later.
+
+## Support
+
+If Blink helps keep your eyes comfortable, you can support its development on Ko-fi:
+[ko-fi.com/rezasoleimani](https://ko-fi.com/rezasoleimani). It's entirely optional and the
+app makes no network calls of its own.
