@@ -13,9 +13,10 @@ what you're doing.
 
 Blink is private by design, and you can check that for yourself:
 
-- **It never connects to the internet.** Blink blocks every network request except loading
-  its own local files. You can confirm it with a tool like Little Snitch or `nettop`:
-  nothing goes out.
+- **It doesn't send or receive any data over the network.** No accounts, analytics, updater,
+  or crash reporting. A built-in kill-switch cancels outbound requests, and Chromium's
+  background networking is disabled. (Choosing "Support Blink" opens a link in your own
+  browser.) You can confirm it with a tool like Little Snitch or `nettop`: nothing goes out.
 - **The webcam is optional and off by default.** Blink works fine on a simple timer with no
   camera. You only turn the camera on if you want to.
 - **Camera video never gets saved or sent.** In webcam mode, each frame is checked in memory
@@ -49,8 +50,9 @@ on-device face tracking from **MediaPipe** and unit tests in **Vitest**.
 Some of the more interesting parts of the code:
 
 - **Privacy is enforced in code, not just promised.** The main process installs a
-  network kill-switch that cancels every outbound request except local files, so the "no
-  internet" claim is something you can actually verify. Camera frames never leave the hidden
+  network kill-switch that cancels every outbound request except local files, and disables
+  Chromium's background networking, so the "no network" claim is something you can actually
+  verify. Camera frames never leave the hidden
   detector window; only small facts (a blink happened, the current blink rate) are passed to
   the rest of the app.
 - **On-device blink detection.** A hidden window runs MediaPipe's Face Landmarker at about

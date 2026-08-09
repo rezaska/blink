@@ -9,6 +9,13 @@ import { initDetection, applySettings, stopDetection } from './detection'
 import { registerSettingsIpc, openSettingsWindow } from './settings-window'
 import { getSettings } from './store'
 
+// Disable Chromium's background networking (variations/field-trials, component + safe-
+// browsing updates, domain reliability, captive-portal probes). Combined with the
+// network-guard, this means the app genuinely makes no network connections of its own.
+app.commandLine.appendSwitch('disable-background-networking')
+app.commandLine.appendSwitch('disable-component-update')
+app.commandLine.appendSwitch('disable-domain-reliability')
+
 // Privileged scheme registration MUST happen before app `ready`.
 registerAppScheme()
 

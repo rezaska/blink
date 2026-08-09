@@ -94,9 +94,9 @@ function renderOnboarding(): void {
         <p class="muted">When we focus on a screen, we blink up to 4× less than normal - which
         leaves eyes dry and sore. Blink gives you gentle, ambient reminders to blink, without
         popups that break your focus.</p>
-        <div class="privacy-note">🔒 <strong>Private by design.</strong> Blink makes no network
-        connections at all. If you enable the optional webcam mode, everything runs on your Mac -
-        video frames are analysed in memory and never saved, shown, or sent anywhere.</div>
+        <div class="privacy-note">🔒 <strong>Private by design.</strong> Blink does not send or
+        receive any data over the network. If you enable the optional webcam mode, everything runs
+        on your Mac - video frames are analysed in memory and never saved, shown, or sent anywhere.</div>
       </div>
     `)
     mount(inner, nextBtn('Get started', detection))
@@ -325,8 +325,9 @@ function renderSettings(): void {
   // --- Privacy card ---
   const privCard = el('<div class="card"><h2>Privacy &amp; data</h2></div>')
   privCard.appendChild(
-    el(`<div class="privacy-note">Blink makes <strong>no network connections</strong>. Your settings
-    and blink stats are stored only on this Mac, as plain JSON. No account, no cloud, no analytics.</div>`)
+    el(`<div class="privacy-note">Blink does <strong>not send or receive any data over the network</strong>.
+    No accounts, analytics, updater, or crash reporting. Your settings and stats are stored only on this
+    Mac, as plain JSON.</div>`)
   )
   const reveal = el('<button>Reveal data folder</button>')
   reveal.addEventListener('click', () => api.revealDataFolder())
