@@ -2,6 +2,7 @@ import {
   Menu,
   Tray,
   nativeImage,
+  shell,
   app,
   type NativeImage,
   type MenuItemConstructorOptions
@@ -11,6 +12,8 @@ import { snapshot, pauseFor, pauseUntilTomorrow, resume, type TrayState } from '
 import { openSettingsWindow } from './settings-window'
 
 const MIN = 60_000
+// Opened in the user's browser via shell.openExternal — the app itself makes no request.
+const KOFI_URL = 'https://ko-fi.com/rezasoleimani'
 
 let tray: Tray | null = null
 let flashTimer: ReturnType<typeof setTimeout> | null = null
@@ -96,6 +99,7 @@ export function rebuildMenu(): void {
     ...pauseSection,
     { type: 'separator' },
     { label: 'Blink Settings', click: () => openSettingsWindow('settings') },
+    { label: 'Support Blink ↗', click: () => void shell.openExternal(KOFI_URL) },
     { type: 'separator' },
     { label: 'Quit Blink', click: () => app.quit() }
   ])
