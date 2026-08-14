@@ -430,14 +430,14 @@ function renderSupport(): void {
   card.appendChild(
     el(
       `<p class="muted">Blink is free, private, and made with care. If it has helped keep your
-      eyes comfortable, a small tip on Ko-fi supports its ongoing development. Thank you.</p>`
+      eyes comfortable, you can leave a small tip to support its ongoing development. Thank you.</p>`
     )
   )
-  const open = el('<button class="primary">Open Ko-fi ↗</button>')
+  const open = el('<button class="primary">Donate ↗</button>')
   open.addEventListener('click', () => api.openKofi())
   card.appendChild(open)
   card.appendChild(
-    el('<p class="hint">This opens ko-fi.com in your browser. Blink itself sends nothing.</p>')
+    el('<p class="hint">Opens a secure donation page (Ko-fi) in your browser. Blink itself sends nothing.</p>')
   )
   app.appendChild(card)
   fitWindow()
