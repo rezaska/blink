@@ -353,9 +353,18 @@ input[type='color'] {
   align-items: center;
   margin-top: 20px;
 }
+/* Onboarding action row inside the card (Back on the left, primary in the right corner). */
+.ob-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+}
 .steps {
   display: flex;
+  justify-content: center;
   gap: 6px;
+  margin-top: 16px;
 }
 .dot {
   width: 8px;

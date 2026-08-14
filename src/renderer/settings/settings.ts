@@ -54,28 +54,29 @@ function renderOnboarding(fromSettings = false): void {
   // Ordered steps, so a Back button can return to the previous one (declarations hoist).
   const steps: Array<() => void> = [welcome, detection, tasting, sensitivity, done]
 
-  const mount = (inner: HTMLElement, footer: HTMLElement) => {
+  const mount = (inner: HTMLElement, primary: HTMLElement) => {
     app.innerHTML = ''
     const card = el('<div class="card"></div>')
     card.appendChild(inner)
-    app.appendChild(card)
 
-    const dots = el('<div class="steps"></div>')
-    for (let i = 0; i < STEPS; i++) dots.appendChild(el(`<div class="dot ${i === step ? 'active' : ''}"></div>`))
-
-    const foot = el('<div class="footer"></div>')
-    // Left: Back (or a spacer on the first step, to keep the dots centered).
+    // Action row inside the card: Back on the left (from step 2 on), primary in the right corner.
+    const actions = el('<div class="ob-actions"></div>')
     if (step > 0) {
       const back = el('<button class="ghost">Back</button>')
       const target = steps[step - 1]
       back.addEventListener('click', () => target())
-      foot.appendChild(back)
+      actions.appendChild(back)
     } else {
-      foot.appendChild(el('<div></div>'))
+      actions.appendChild(el('<div></div>')) // spacer keeps the primary in the right corner
     }
-    foot.appendChild(dots)
-    foot.appendChild(footer)
-    app.appendChild(foot)
+    actions.appendChild(primary)
+    card.appendChild(actions)
+    app.appendChild(card)
+
+    // Centered pagination below the card.
+    const dots = el('<div class="steps"></div>')
+    for (let i = 0; i < STEPS; i++) dots.appendChild(el(`<div class="dot ${i === step ? 'active' : ''}"></div>`))
+    app.appendChild(dots)
 
     // When launched from Settings (not first run), offer a way back without finishing.
     if (fromSettings) {
