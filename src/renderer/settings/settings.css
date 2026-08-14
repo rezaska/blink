@@ -138,6 +138,15 @@ p {
 .center {
   text-align: center;
 }
+/* Subtle "return to settings" link shown during recalibration (from Settings). */
+.cancel-link {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
+  padding: 6px 8px;
+  margin-top: 10px;
+}
 
 /* Reserve two lines for the cue description so switching cue type never resizes the row. */
 #cue-desc {

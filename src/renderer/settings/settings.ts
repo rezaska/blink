@@ -43,7 +43,7 @@ function cuePayloadFrom(s: Pick<Settings, 'cueType' | 'intensity' | 'glowColor' 
 
 // ---------- onboarding ----------
 
-function renderOnboarding(): void {
+function renderOnboarding(fromSettings = false): void {
   const draft: Settings = { ...settings }
   let step = 0
   const STEPS = 5
@@ -76,6 +76,13 @@ function renderOnboarding(): void {
     foot.appendChild(dots)
     foot.appendChild(footer)
     app.appendChild(foot)
+
+    // When launched from Settings (not first run), offer a way back without finishing.
+    if (fromSettings) {
+      const cancel = el('<button class="cancel-link">Cancel and return to settings</button>')
+      cancel.addEventListener('click', () => renderSettings())
+      app.appendChild(cancel)
+    }
     // No per-step fit: the window is a fixed calibration size (see api.onboardingSize).
   }
 
@@ -317,7 +324,7 @@ function renderSettings(): void {
   const recalib = el('<button class="ghost">Re-run calibration…</button>')
   recalib.addEventListener('click', () => {
     settings = { ...settings }
-    renderOnboarding()
+    renderOnboarding(true)
   })
   genCard.appendChild(rowNode('Calibration', '', recalib))
   app.appendChild(genCard)

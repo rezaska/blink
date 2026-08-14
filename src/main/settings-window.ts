@@ -134,6 +134,7 @@ export function registerSettingsIpc(): void {
   // Also cap the window's max height to the content, so it can't be dragged taller than needed.
   ipcMain.on(IPC.resizeSettings, (_e, height: number) => {
     if (!win || win.isDestroyed()) return
+    win.setResizable(true) // fitWindow is only used by resizable views; undo any onboarding lock
     const area = screen.getDisplayNearestPoint(win.getBounds()).workArea
     const [, currentContentH] = win.getContentSize()
     const [winW, winH] = win.getSize()
