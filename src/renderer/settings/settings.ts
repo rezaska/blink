@@ -94,7 +94,7 @@ function renderOnboarding(): void {
         <p class="muted">When we focus on a screen, we blink up to 4× less than normal - which
         leaves eyes dry and sore. Blink gives you gentle, ambient reminders to blink, without
         popups that break your focus.</p>
-        <div class="privacy-note">🔒 <strong>Private by design.</strong> Blink does not send or
+        <div class="privacy-note"><strong>Private by design.</strong> Blink does not send or
         receive any data over the network. If you enable the optional webcam mode, everything runs
         on your Mac - video frames are analysed in memory and never saved, shown, or sent anywhere.</div>
       </div>
