@@ -430,7 +430,7 @@ function renderSupport(): void {
   card.appendChild(
     el(
       `<p class="muted">Blink is free, private, and made with care. If it has helped keep your
-      eyes comfortable, you can leave a small tip to support its ongoing development. Thank you.</p>`
+      eyes comfortable, you can buy me a coffee to support its ongoing development. Thank you.</p>`
     )
   )
   const open = el('<button class="primary">Donate ↗</button>')
