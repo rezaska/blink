@@ -146,6 +146,8 @@ p {
   font-size: 13px;
   padding: 6px 8px;
   margin-top: 10px;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 /* Reserve two lines for the cue description so switching cue type never resizes the row. */
