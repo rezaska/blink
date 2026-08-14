@@ -157,6 +157,17 @@ button {
   color: var(--text);
   padding: 8px 14px;
   cursor: pointer;
+  transition: transform 0.06s ease, background 0.12s ease;
+}
+/* Pressed feedback: a quick "I clicked it" without a persistent hover. */
+button:active {
+  transform: scale(0.97);
+}
+/* Keyboard focus ring (only when navigating by keyboard, not on click). */
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 button.primary {
   background: var(--accent-fill);
@@ -194,6 +205,19 @@ button.ghost {
 .seg button.active {
   background: var(--accent-tint);
   color: var(--accent-ink);
+}
+/* Segmented buttons live in an overflow-clipped group, so darken on press instead of
+   scaling, and use an inset focus ring so it isn't clipped. */
+.seg button:active {
+  transform: none;
+  background: color-mix(in srgb, var(--text) 8%, var(--card));
+}
+.seg button.active:active {
+  background: var(--accent-tint);
+}
+.seg button:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--accent);
 }
 
 input[type='range'] {
@@ -298,6 +322,11 @@ input[type='color'] {
 .choice.active {
   border-color: var(--accent);
   box-shadow: 0 0 0 2px var(--accent-tint);
+}
+/* Choice cards: subtle darken on press rather than a scale. */
+.choice:active {
+  transform: none;
+  background: color-mix(in srgb, var(--text) 5%, var(--card));
 }
 .choice .title {
   font-weight: 600;
