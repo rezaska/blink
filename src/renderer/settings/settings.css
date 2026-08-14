@@ -135,6 +135,9 @@ p {
   justify-content: center;
   padding-top: 10px;
 }
+.center {
+  text-align: center;
+}
 
 /* Reserve two lines for the cue description so switching cue type never resizes the row. */
 #cue-desc {

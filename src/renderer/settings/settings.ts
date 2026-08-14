@@ -433,11 +433,16 @@ function renderSupport(): void {
       eyes comfortable, you can buy me a coffee to support its ongoing development. Thank you.</p>`
     )
   )
-  const open = el('<button class="primary">Donate ↗</button>')
-  open.addEventListener('click', () => api.openKofi())
-  card.appendChild(open)
+  const actions = el('<div class="center-row"></div>')
+  const open = el('<button class="primary">Buy me a coffee ↗</button>')
+  open.addEventListener('click', () => {
+    api.openKofi()
+    api.close() // close the window as soon as the link is opened
+  })
+  actions.appendChild(open)
+  card.appendChild(actions)
   card.appendChild(
-    el('<p class="hint">Opens a secure donation page (Ko-fi) in your browser. Blink itself sends nothing.</p>')
+    el('<p class="hint center">Opens a secure donation page (Ko-fi) in your browser. Blink itself sends nothing.</p>')
   )
   app.appendChild(card)
   fitWindow()
