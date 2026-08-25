@@ -1,5 +1,7 @@
 # Blink
 
+[![Latest release](https://img.shields.io/github/v/release/rezaska/blink?label=download&color=0f766e)](https://github.com/rezaska/blink/releases/latest)
+
 **Gentle reminders to blink, so your eyes don't dry out while you work.**
 
 When you stare at a screen, you blink far less than normal. A healthy rate is about 15 to 20
