@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Download Blink</title>
+    <meta name="description" content="Download Blink, a private macOS app that gently reminds you to blink so your eyes don't dry out." />
+    <style>
+      :root {
+        --bg: #f4faf9;
+        --card: #ffffff;
+        --text: #16302b;
+        --muted: #5c6b68;
+        --border: #dfeae7;
+        --accent: #14b8a6;
+        --accent-deep: #0f766e;
+        --link: #0f766e;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0f1917;
+          --card: #16211e;
+          --text: #e6efec;
+          --muted: #9fb3ae;
+          --border: #23322e;
+          --accent: #2dd4bf;
+          --accent-deep: #0f766e;
+          --link: #2dd4bf;
+        }
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; background: var(--bg); color: var(--text); }
+      body {
+        font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+        padding: 56px 20px 80px;
+      }
+      main { max-width: 640px; margin: 0 auto; }
+      h1 { font-size: 34px; margin: 0 0 6px; color: var(--accent); }
+      .tagline { color: var(--muted); font-size: 18px; margin: 0 0 28px; }
+      h2 { font-size: 19px; margin: 34px 0 10px; }
+      p { margin: 0 0 12px; }
+      a { color: var(--link); }
+      ol, ul { margin: 0 0 12px; padding-left: 22px; }
+      li { margin: 6px 0; }
+      .download {
+        display: inline-block;
+        background: var(--accent-deep);
+        color: #ffffff;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 17px;
+        padding: 14px 24px;
+        border-radius: 12px;
+      }
+      .meta { color: var(--muted); font-size: 14px; margin-top: 10px; }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 20px 22px;
+        margin: 8px 0 20px;
+      }
+      code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 12.5px;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 2px 6px;
+        word-break: break-all;
+      }
+      hr { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Blink</h1>
+      <p class="tagline">Gentle reminders to blink, so your eyes don't dry out while you work.</p>
+
+      <div class="card">
+        <a class="download" href="https://github.com/rezaska/blink/releases/download/v0.1.0/Blink-0.1.0-arm64.dmg">
+          Download for macOS
+        </a>
+        <p class="meta">Version 0.1.0 &middot; Apple Silicon (M1/M2/M3/M4) &middot; 106 MB</p>
+        <p class="meta">
+          Older Intel Mac? An Intel build isn't available yet. See all releases on
+          <a href="https://github.com/rezaska/blink/releases">GitHub</a>.
+        </p>
+      </div>
+
+      <h2>How to install</h2>
+      <ol>
+        <li>Open the downloaded <code>.dmg</code> and drag <strong>Blink</strong> into your Applications folder.</li>
+        <li>
+          Blink is a small independent app and isn't notarized by Apple, so the first time you
+          open it macOS will block it. To open it: try to open Blink once, then go to
+          <strong>System Settings &rarr; Privacy &amp; Security</strong>, scroll down, and click
+          <strong>"Open Anyway"</strong> next to the Blink message. Confirm, and it opens normally
+          from then on.
+        </li>
+        <li>Blink lives in your menu bar (top-right). On first launch it walks you through a quick 30-second setup.</li>
+      </ol>
+      <p class="meta">
+        Prefer the terminal? You can also run
+        <code>xattr -dr com.apple.quarantine /Applications/Blink.app</code> to open it directly.
+      </p>
+
+      <hr />
+
+      <h2>Private by design</h2>
+      <p>
+        Blink does not send or receive any data over the network. It has no accounts, analytics,
+        updater, or crash reporting. The optional webcam detection runs entirely on your Mac and
+        never records or transmits anything. Read the full
+        <a href="https://www.rezasoleimani.ca/blink/privacy/">privacy policy</a>.
+      </p>
+
+      <h2>Verify your download (optional)</h2>
+      <p class="meta">SHA-256 checksum of the <code>.dmg</code>:</p>
+      <p><code>80b5903bdaf5bfde5fba28f18c207a54e36f9eea01d5f99de28111fd153727c2</code></p>
+    </main>
+  </body>
+</html>
