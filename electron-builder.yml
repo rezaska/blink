@@ -1,0 +1,38 @@
+appId: com.rezasoleimani.blink
+productName: Blink
+copyright: Copyright © 2026 Reza Soleimani
+
+directories:
+  output: dist
+  buildResources: build
+
+npmRebuild: false
+asar: true
+
+# App code: the electron-vite output + package.json. Production node_modules
+# (electron-store) are included automatically; dev deps are pruned.
+files:
+  - out/**
+  - package.json
+  - '!**/*.map'
+
+# Local, bundled assets served at runtime from process.resourcesPath:
+# resources/wasm, resources/models (MediaPipe), resources/tray (menu-bar icons).
+extraResources:
+  - from: resources
+    to: .
+
+# Ad-hoc sign the packaged app (required to launch on Apple Silicon when we're not
+# using a real Developer ID / notarization yet).
+afterPack: build/after-pack.cjs
+
+mac:
+  target: dmg
+  category: public.app-category.healthcare-fitness
+  icon: build/icon.png
+  identity: null # unsigned (ad-hoc via afterPack); no Developer ID / notarization yet
+  hardenedRuntime: false
+  extendInfo:
+    NSCameraUsageDescription: >-
+      Blink uses your camera locally, on your Mac, to detect blinks. No video is
+      ever recorded, shown, or sent anywhere.

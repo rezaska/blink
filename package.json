@@ -19,6 +19,7 @@
     "package": "npm run build && electron-builder --mac"
   },
   "devDependencies": {
+    "@mediapipe/tasks-vision": "^0.10.35",
     "@types/node": "^22.9.0",
     "electron": "^33.2.0",
     "electron-builder": "^25.1.8",
@@ -28,7 +29,6 @@
     "vitest": "^2.1.5"
   },
   "dependencies": {
-    "@mediapipe/tasks-vision": "^0.10.35",
     "electron-store": "^8.2.0"
   }
 }
