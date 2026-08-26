@@ -47,7 +47,7 @@ setup, or later in Settings:
 ## Under the hood
 
 A menu-bar desktop app built with **Electron**, **TypeScript**, and **electron-vite**, with
-on-device face tracking from **MediaPipe** and unit tests in **Vitest**.
+on-device face tracking from [**MediaPipe**](https://github.com/google-ai-edge/mediapipe) and unit tests in **Vitest**.
 
 Some of the more interesting parts of the code:
 
