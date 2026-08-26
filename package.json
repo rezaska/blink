@@ -1,6 +1,6 @@
 {
   "name": "blink",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Ambient blink reminder — subtle screen cues to prevent dry eyes. 100% local, no network.",
   "main": "./out/main/index.js",
   "author": "Blink",
@@ -23,7 +23,7 @@
     "@mediapipe/tasks-vision": "^0.10.35",
     "@types/node": "^22.9.0",
     "electron": "^39.8.10",
-    "electron-builder": "^26.15.3",
+    "electron-builder": "^25.1.8",
     "electron-vite": "^5.0.0",
     "typescript": "^5.6.3",
     "vite": "^6.4.3",
