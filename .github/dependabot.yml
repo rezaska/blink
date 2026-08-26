@@ -1,0 +1,21 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    # Bundle routine updates into a single PR instead of many.
+    groups:
+      npm-minor-and-patch:
+        update-types:
+          - minor
+          - patch
+    # Don't auto-propose major-version bumps. They repeatedly broke the build
+    # (vite 6 vs electron-vite, electron-builder 26 vs @noble/hashes), so majors
+    # should be adopted deliberately and tested, not merged automatically.
+    # Security + minor/patch updates still come through.
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - version-update:semver-major
