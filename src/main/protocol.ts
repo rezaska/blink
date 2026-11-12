@@ -30,7 +30,10 @@ export function registerAppScheme(): void {
         secure: true,
         supportFetchAPI: true,
         stream: true,
-        bypassCSP: true
+        bypassCSP: true,
+        // The packaged detector page is loaded from file://, so its import of
+        // app://blink/wasm/*.js is cross-origin; without this Chromium refuses it.
+        corsEnabled: true
       }
     }
   ])
@@ -66,11 +69,10 @@ export function registerAppProtocol(): void {
     // Force correct MIME so WebAssembly.instantiateStreaming works for .wasm.
     const ext = rel.slice(rel.lastIndexOf('.')).toLowerCase()
     const mime = MIME[ext]
-    if (mime) {
-      const headers = new Headers(res.headers)
-      headers.set('Content-Type', mime)
-      return new Response(res.body, { status: res.status, headers })
-    }
-    return res
+    const headers = new Headers(res.headers)
+    // Local assets only, requested by our own file:// pages (origin "null").
+    headers.set('Access-Control-Allow-Origin', '*')
+    if (mime) headers.set('Content-Type', mime)
+    return new Response(res.body, { status: res.status, headers })
   })
 }
